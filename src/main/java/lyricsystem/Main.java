@@ -1,23 +1,13 @@
 package lyricsystem;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.io.InputStream;
+import java.io.IOException;
 
 public class Main {
-    public static void main(String[] args) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        try (InputStream inputStream = Main.class.getResourceAsStream("/lyrics/幻の命.json")) {
-            if (inputStream == null) {
-                System.out.println("No Lyrics JSON file found");
-            }
-            Lyric lyric = objectMapper.readValue(inputStream, Lyric.class);
-            System.out.print(lyric);
+    public static void main(String[] args) throws IOException {
+        Service service = new Service();
+        // service.executeSystem();
 
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        // System.out.println("Hello world!");
-
+        service.extractWords("幻の命");
     }
 }

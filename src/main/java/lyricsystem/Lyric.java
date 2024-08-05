@@ -2,6 +2,7 @@ package lyricsystem;
 
 import lombok.Data;
 
+
 @Data
 public class Lyric {
     private String title;
@@ -13,4 +14,9 @@ public class Lyric {
     public String toString() {
         return "title: "+title+"\nartist: "+artist+"\n"+lyricJapanese+"\nlyricRomaji: "+lyricRomaji;
     }
+
+
+
+
+
 }

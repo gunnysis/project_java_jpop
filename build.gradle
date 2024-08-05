@@ -19,6 +19,8 @@ dependencies {
     // lombok
     compileOnly 'org.projectlombok:lombok:1.18.30'
     annotationProcessor 'org.projectlombok:lombok:1.18.30'
+    // https://mvnrepository.com/artifact/org.apache.lucene/lucene-analyzers-kuromoji
+    implementation group: 'org.apache.lucene', name: 'lucene-analyzers-kuromoji', version: '8.11.3'
 }
 
 test {

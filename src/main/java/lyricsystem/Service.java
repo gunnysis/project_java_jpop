@@ -75,14 +75,18 @@ public class Service {
     }
 
     private void handleService() {
-        switch (getServiceNumber()) {
-            case 1:
-                System.out.print("input song name: ");
-                String inputTitle = (new Scanner(System.in).nextLine()).trim();
-                searchLyric(inputTitle);
-                break;
+        System.out.print("input song name: ");
+        String inputTitle = (new Scanner(System.in).nextLine()).trim();
+        searchLyric(inputTitle);
 
-        }
+        // annotated below codes because of only 1 call method
+//        switch (getServiceNumber()) {
+//            case 1:
+//                System.out.print("input song name: ");
+//                String inputTitle = (new Scanner(System.in).nextLine()).trim();
+//                searchLyric(inputTitle);
+//                break;
+//        }
     }
 
     private void handleLyricType() {
@@ -104,6 +108,7 @@ public class Service {
 
     public void executeSystem() {
         while (true) {
+            System.out.print("\n\n");
             handleService();
 
         }

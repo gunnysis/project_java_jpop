@@ -1,5 +1,9 @@
 plugins {
     id 'java'
+
+    // javaFx
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.13'
 }
 
 group = 'lyrics'
@@ -28,8 +32,21 @@ dependencies {
     // google Cloud translate api
     implementation 'com.google.cloud:google-cloud-translate:2.47.0'
 
+    // javaFx
+    // https://mvnrepository.com/artifact/org.openjfx/javafx-controls
+    implementation group: 'org.openjfx', name: 'javafx-controls', version: '23-ea+22'
+    implementation group: 'org.openjfx', name: 'javafx-fxml', version: '23-ea+22'
+}
+
+javafx {
+    version = "23-ea+22"
+    modules = [ 'javafx.controls', 'javafx.fxml' ] // 필요한 모듈을 추가합니다
 }
 
 test {
     useJUnitPlatform()
+}
+
+application {
+    mainClass = 'lyricsystem.Main' // 메인 클래스의 경로를 설정합니다
 }

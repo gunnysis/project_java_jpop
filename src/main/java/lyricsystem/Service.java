@@ -6,6 +6,7 @@ import com.google.cloud.translate.TranslateOptions;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import io.github.cdimascio.dotenv.Dotenv;
+import javafx.application.Platform;
 import org.apache.lucene.analysis.ja.JapaneseTokenizer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 
@@ -20,6 +21,7 @@ public class Service {
     Word word;
     ObjectMapper objectMapper = new ObjectMapper();
     Translate translate = TranslateOptions.newBuilder().setApiKey(Dotenv.load().get("GOOGLE_API_KEY")).build().getService();
+    Main main;
     public static String infoOfService =
             "========================================\n" +
                     "1: search lyrics \n" +
@@ -30,6 +32,9 @@ public class Service {
                     "1: Japanese 2: Romaji 3: Introduce korean meaning of lyric's words\n" +
                     "========================================\n";
 
+    Service(Main main) {
+        this.main = main;
+    }
 
     private void displayInfo(String kinds) {
         switch (kinds) {
@@ -74,20 +79,7 @@ public class Service {
         return lyricType;
     }
 
-    private void handleService() {
-        System.out.print("input song name: ");
-        String inputTitle = (new Scanner(System.in).nextLine()).trim();
-        searchLyric(inputTitle);
 
-        // annotated below codes because of only 1 call method
-//        switch (getServiceNumber()) {
-//            case 1:
-//                System.out.print("input song name: ");
-//                String inputTitle = (new Scanner(System.in).nextLine()).trim();
-//                searchLyric(inputTitle);
-//                break;
-//        }
-    }
 
     private void handleLyricType() {
         switch (getLyricType()) {
@@ -105,24 +97,38 @@ public class Service {
         }
     }
 
-
-    public void executeSystem() {
-        while (true) {
-            System.out.print("\n\n");
-            handleService();
-
+    private String handleLyricTypeTest(String serviceType) {
+        String result = "";
+        switch (serviceType) {
+            case "japanese":
+                result = lyric.getLyricJapanese();
+                break;
+            case "romaji":
+                result = lyric.getLyricRomaji();
+                break;
+            case "words":
+                result = String.valueOf(new Word(lyric.getTitle()));
+                break;
         }
+        return result;
     }
 
-    private void searchLyric(String songTitle) {
+
+
+
+
+
+
+
+    public void searchLyric(String songTitle, String serviceType) {
+
         try (InputStream inputStream = Main.class.getResourceAsStream("/lyrics/"+songTitle+".json")) {
             if (inputStream == null) {
-                System.out.println("No Lyrics JSON file found");
+                main.errorLabel.setText("No Lyrics JSON file found");
             }
             lyric = objectMapper.readValue(inputStream, Lyric.class);
 
-            displayInfo("LyricsType");
-            handleLyricType();
+            Platform.runLater(() -> main.textArea.setText(handleLyricTypeTest(serviceType)));
 
         } catch (IllegalArgumentException | IOException e) {
             System.out.println("Not exist this song");

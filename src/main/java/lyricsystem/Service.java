@@ -17,6 +17,7 @@ import java.util.Scanner;
 
 public class Service {
     Lyric lyric;
+    Word word;
     ObjectMapper objectMapper = new ObjectMapper();
     Translate translate = TranslateOptions.newBuilder().setApiKey(Dotenv.load().get("GOOGLE_API_KEY")).build().getService();
     public static String infoOfService =
@@ -26,7 +27,7 @@ public class Service {
 
     public String infoOfLyricsType =
             "========================================\n" +
-                    "1: Japanese 2: Romaji \n" +
+                    "1: Japanese 2: Romaji 3: Introduce korean meaning of lyric's words\n" +
                     "========================================\n";
 
 
@@ -61,8 +62,8 @@ public class Service {
         System.out.print("input LyricsType number: ");
         try {
             lyricType = new Scanner(System.in).nextInt();
-            if (lyricType > 2) {
-                System.out.println("Lyric type not valid");
+            if (lyricType > 3) {
+                System.out.println("input value is not valid");
                 lyricType = new Scanner(System.in).nextInt();
             }
         } catch (InputMismatchException e) {
@@ -92,10 +93,14 @@ public class Service {
             case 2:
                 System.out.println(lyric.getLyricRomaji());
                 break;
+            case 3:
+                System.out.println(new Word(lyric.getTitle()));
+                break;
             default:
                 break;
         }
     }
+
 
     public void executeSystem() {
         while (true) {

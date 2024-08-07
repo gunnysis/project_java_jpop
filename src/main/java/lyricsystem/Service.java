@@ -1,21 +1,24 @@
 package lyricsystem;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.cloud.translate.Translate;
+import com.google.cloud.translate.TranslateOptions;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import io.github.cdimascio.dotenv.Dotenv;
 import org.apache.lucene.analysis.ja.JapaneseTokenizer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringReader;
-import java.util.ArrayList;
+import java.io.*;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.InputMismatchException;
-import java.util.List;
 import java.util.Scanner;
 
 public class Service {
     Lyric lyric;
     ObjectMapper objectMapper = new ObjectMapper();
+    Translate translate = TranslateOptions.newBuilder().setApiKey(Dotenv.load().get("GOOGLE_API_KEY")).build().getService();
     public static String infoOfService =
             "========================================\n" +
                     "1: search lyrics \n" +
@@ -111,7 +114,7 @@ public class Service {
             displayInfo("LyricsType");
             handleLyricType();
 
-        } catch (IllegalArgumentException | java.io.IOException e) {
+        } catch (IllegalArgumentException | IOException e) {
             System.out.println("Not exist this song");
         }
 
@@ -125,15 +128,16 @@ public class Service {
         JapaneseTokenizer tokenizer = new JapaneseTokenizer(null, false, JapaneseTokenizer.Mode.NORMAL);
         tokenizer.setReader(new StringReader(lyric.getLyricJapanese()));
 
-        List<String> words = new ArrayList<>();
+        // List<String> words = new ArrayList<>();
+        HashMap<String,String> words = new HashMap<>();
 
         try {
             tokenizer.reset();
             CharTermAttribute charTermAttribute = tokenizer.addAttribute(CharTermAttribute.class);
 
             while (tokenizer.incrementToken()) {
-                if (!charTermAttribute.toString().equals("\n") && !charTermAttribute.toString().equals(" ")  && !charTermAttribute.toString().equals("\n\n")) {
-                    words.add(charTermAttribute.toString());
+                if (!Arrays.asList("\n","「","」"," ","\n\n").contains(charTermAttribute.toString())) {
+                    words.put(charTermAttribute.toString(),translate.translate(charTermAttribute.toString(), Translate.TranslateOption.targetLanguage("ko")).getTranslatedText());
                 }
             }
 
@@ -145,9 +149,22 @@ public class Service {
         }
 
         File file = new File( "src/main/resources/words/" + songTitle + "_words" + ".json");
+        FileWriter fileWriter = null;
+        Gson gson;
         if (!file.exists()) {
-            file.createNewFile();
-            objectMapper.writeValue(new File("src/main/resources/words/" + songTitle + "_words" + ".json"), words);
+            try {
+                file.createNewFile();
+                fileWriter = new FileWriter(file.getAbsoluteFile());
+                // making json format
+                gson = new GsonBuilder().setPrettyPrinting().create();
+                gson.toJson(words, fileWriter);
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                if (fileWriter != null) {
+                    fileWriter.close();
+                }
+            }
         }
     }
 }

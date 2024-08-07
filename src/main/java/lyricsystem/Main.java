@@ -34,7 +34,7 @@ public class Main extends Application {
         errorLabel.setStyle("-fx-text-fill: red; -fx-font-size: 12px;");
 
         textArea = new TextArea();
-//        textArea.setEditable(false);
+        textArea.setEditable(false);
         textArea.setPromptText("Text Area (Read Only)");
 
         hbox = new HBox(10, inputBox, serviceTypeBox, enterButton);

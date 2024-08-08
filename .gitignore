@@ -1,8 +1,8 @@
 # lyrics folder below files because of copyright
-src/main/java/resources/lyrics
-src/main/java/resources/words
-
-
+!src/main/java/resources/lyrics/default-lyric.json
+!src/main/java/resources/words/default-word.json
+src/main/java/resources/lyrics/
+src/main/java/resources/words/
 
 META-INF
 

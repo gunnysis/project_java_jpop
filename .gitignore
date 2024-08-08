@@ -1,13 +1,13 @@
-META-INF
-
-# env file
-.env
-
 # lyrics folder below files because of copyright
 !src/main/resources/lyrics/default-lyric.json
 src/main/resources/lyrics/*
 !src/main/resources/words/default-word.json
 src/main/resources/words/*
+
+META-INF
+
+# env file
+.env
 
 .gradle
 build/

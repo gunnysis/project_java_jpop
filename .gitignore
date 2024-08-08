@@ -4,7 +4,7 @@ META-INF
 .env
 
 # lyrics folder below files because of copyright
-!src/main/resources/lyrics/default-lyrics.json
+!src/main/resources/lyrics/default-lyric.json
 src/main/resources/lyrics/*
 !src/main/resources/words/default-word.json
 src/main/resources/words/*

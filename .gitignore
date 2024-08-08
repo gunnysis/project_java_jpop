@@ -4,7 +4,9 @@ META-INF
 .env
 
 # lyrics folder below files because of copyright
+src/resources/lyrics/!default-word.json
 src/resources/lyrics/*
+src/resources/words/!default-word.json
 src/resources/words/*
 
 .gradle

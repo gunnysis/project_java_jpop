@@ -54,7 +54,7 @@ public class Main extends Application {
             }
         });
         outputDefaultJsonFile.setOnAction(e -> {
-            defaultLyricFile = new File("src/main/resources/default-lyric.json");
+            defaultLyricFile = new File("src/main/resources/lyrics/default-lyric.json");
             try (FileInputStream defaultLyricJsonFile = new FileInputStream(defaultLyricFile)) {
                 downloadFile(defaultLyricJsonFile, primaryStage);
             } catch (IOException ex) {

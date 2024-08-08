@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.cloud.translate.Translate;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import javafx.application.Platform;
 import lombok.Data;
 import org.apache.lucene.analysis.ja.JapaneseTokenizer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
@@ -17,12 +16,12 @@ import java.util.regex.Pattern;
 import static lyricsystem.Service.translate;
 
 @Data
-public class Word {
+public class Word_bak2 {
     public String titleOfLyric;
-    Map words;
+    Map<String,String> words;
     Main main;
 
-    Word(String title) {
+    Word_bak2(String title) {
         this.titleOfLyric = title;
     }
 

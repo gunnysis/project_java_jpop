@@ -24,6 +24,7 @@ public class Lyric {
         return "title: "+title+"\nartist: "+artist+"\n"+lyricJapanese+"\nlyricRomaji: "+lyricRomaji;
     }
 
+    // Using MusixMatch API
     public StringBuffer getExternalLyric(String title, String artist) {
         try {
             trackData = musixMatch.getMatchingTrack(title,artist).getTrack();

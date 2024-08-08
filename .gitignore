@@ -3,6 +3,10 @@ META-INF
 # env file
 .env
 
+# lyrics folder below files because of copyright
+src/resources/lyrics/*
+src/resources/words/*
+
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar

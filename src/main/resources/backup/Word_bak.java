@@ -17,29 +17,33 @@ import java.util.regex.Pattern;
 import static lyricsystem.Service.translate;
 
 @Data
-public class Word {
-    public String titleOfLyric;
+public class Word_bak {
+    private String titleOfLyric;
     Map words;
-    Main main;
 
-    Word(String title) {
+    Word_bak(String title) {
         this.titleOfLyric = title;
     }
 
     @Override
     public String toString() {
+        Main main = new Main();
         StringBuilder result = new StringBuilder();
+
+
         try {
-            words = (new ObjectMapper()).readValue(new File("src/main/resources/words/"+this.titleOfLyric+"-words"+".json"), Map.class);
+            words = (new ObjectMapper()).readValue(new File("src/main/resources/words/"+this.titleOfLyric+"_words"+".json"), Map.class);
         } catch (IOException e) {
             try {
+
                 extractWords(this.titleOfLyric);
-                words = (new ObjectMapper()).readValue(new File("src/main/resources/words/"+this.titleOfLyric+"-words"+".json"), Map.class);
+                words = (new ObjectMapper()).readValue(new File("src/main/resources/words/"+this.titleOfLyric+"_words"+".json"), Map.class);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
         }
 
+        Platform.runLater(() -> main.describeLabel.setText("If not exist words file, make words file"));
         words.forEach((word, meaning) -> result.append(word).append(": ").append(meaning).append("\n"));
         return result.toString();
     }
@@ -52,7 +56,6 @@ public class Word {
         JapaneseTokenizer tokenizer = new JapaneseTokenizer(null, false, JapaneseTokenizer.Mode.NORMAL);
         tokenizer.setReader(new StringReader(lyric.getLyricJapanese()));
 
-        // List<String> words = new ArrayList<>();
         HashMap<String,String> words = new HashMap<>();
 
         try {

@@ -75,9 +75,9 @@ public class UIEventHandler{
     private void downloadFile(FileInputStream fileInputStream, Stage stage) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setInitialFileName(defaultLyricFile.getName());
-        File targetFile = fileChooser.showSaveDialog(stage);
-        if (targetFile != null) {
-            try(FileOutputStream fileOutputStream = new FileOutputStream(targetFile)) {
+        File saveFile = fileChooser.showSaveDialog(stage);
+        if (saveFile != null) {
+            try(FileOutputStream fileOutputStream = new FileOutputStream(saveFile)) {
                 byte[] buffer = new byte[4096];
                 int bytesRead;
                 while ((bytesRead = fileInputStream.read(buffer)) != -1) {

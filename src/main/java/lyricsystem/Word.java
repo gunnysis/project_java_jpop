@@ -1,13 +1,18 @@
 package lyricsystem;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.cloud.translate.Translate;
+import com.google.cloud.translate.TranslateOptions;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import io.github.cdimascio.dotenv.Dotenv;
 import lombok.Data;
 import org.apache.lucene.analysis.ja.JapaneseTokenizer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
+
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,7 +20,6 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import static lyricsystem.ServiceLyrics.readFromFile;
-import static lyricsystem.ServiceLyrics.translate;
 
 
 @Data
@@ -24,7 +28,8 @@ public class Word {
     Map words;
     Main main;
     private Map cachedWords;
-    ObjectMapper objectMapper = new ObjectMapper();
+    private Map<String, String> translationCache = new HashMap<>();
+
 
 
     Word(String title) {
@@ -56,14 +61,12 @@ public class Word {
 
     public void extractWords(String songTitle) throws IOException {
         InputStream inputStream = Main.class.getResourceAsStream("/lyrics/"+songTitle+".json");
-        // Lyric lyric = objectMapper.readValue(inputStream, Lyric.class);
         Lyric lyric = (Lyric) readFromFile(inputStream, Lyric.class);
 
-                JapaneseTokenizer tokenizer = new JapaneseTokenizer(null, false, JapaneseTokenizer.Mode.NORMAL);
+        JapaneseTokenizer tokenizer = new JapaneseTokenizer(null, false, JapaneseTokenizer.Mode.NORMAL);
         tokenizer.setReader(new StringReader(lyric.getLyricJapanese()));
 
         HashMap<String,String> words = new HashMap<>();
-        Map<String, String> translationCache = new HashMap<>();
         Pattern spetialCharsPattern = Pattern.compile("[\\p{Punct}\\p{IsPunctuation}\\s]");
 
         List<String> termsToTranslate = new ArrayList<>();
@@ -82,6 +85,7 @@ public class Word {
             tokenizer.end();
 
             termsToTranslate.parallelStream().forEach(term -> {
+                Translate translate = TranslateOptions.newBuilder().setApiKey(Dotenv.load().get("GOOGLE_API_KEY")).build().getService();
                 String translated = translate.translate(term, Translate.TranslateOption.targetLanguage("ko")).getTranslatedText();
                 translationCache.put(term, translated);
                 words.put(term, translated);
@@ -93,7 +97,10 @@ public class Word {
             tokenizer.close();
         }
 
-        try (BufferedWriter fileWriter = new BufferedWriter(new FileWriter((new File( "src/main/resources/words/" + songTitle + "-words" + ".json")).getAbsoluteFile()))) {
+        String fileName = String.format("%s-words.json", songTitle);
+        Path storeFilePath = Paths.get("src","main","resources","words",fileName).toAbsolutePath();
+
+        try (BufferedWriter fileWriter = Files.newBufferedWriter(storeFilePath)) {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             gson.toJson(words, fileWriter);
         } catch (IOException e) {

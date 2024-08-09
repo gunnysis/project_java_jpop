@@ -8,19 +8,19 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public class UIEventHandler {
+public class UIEventHandler{
     TextField inputBox;
     ComboBox<String> serviceTypeBox;
     Label describeLabel;
-//    TextArea textArea;
-//    HBox hbox, hbox2;
-//    VBox vbox;
-//    Scene scene;
-    // Service service = new Service(this);
     File defaultLyricFile;
     Stage stage = UIInitializer.stage;
     Service service;
+    private  Map<String, ButtonAction> buttonActions = new HashMap<>();
+
 
     UIEventHandler(UIInitializer uiInitializer) {
         inputBox = uiInitializer.inputBox;
@@ -28,44 +28,47 @@ public class UIEventHandler {
         describeLabel = uiInitializer.describeLabel;
         defaultLyricFile = uiInitializer.defaultLyricFile;
         service =  new Service(uiInitializer);
+        initializeButtonActions();
     }
 
-    public void handleButtonClick(Button button) {
+    private void initializeButtonActions() {
+        buttonActions.put("Enter", () -> {
+            String title = inputBox.getText();
+            String type = serviceTypeBox.getValue();
+            if (title == null || title.isEmpty()) {
+                describeLabel.setText("Input Title of jpop song");
+            } else {
+                service.showTextArea(title, type);
+            }
+        });
+        buttonActions.put("Download Default Lyric File", () -> {
+            FileChooser fileChooser = new FileChooser();
+            File file = fileChooser.showOpenDialog(stage);
+            try {
+                service.uploadLyricFile(file);
+            } catch (FileNotFoundException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+        buttonActions.put("Input Lyric File", () -> {
+            defaultLyricFile = new File("src/main/resources/lyrics/default-lyric.json");
+            try (FileInputStream defaultLyricJsonFile = new FileInputStream(defaultLyricFile)) {
+                downloadFile(defaultLyricJsonFile, stage);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+    }
 
-        switch (button.getText()) {
-            case "Enter":
-                button.setOnAction(e -> {
-                    String title = inputBox.getText();
-                    String type = serviceTypeBox.getValue();
-                    if (title == null || title.isEmpty()) {
-                        describeLabel.setText("Input Title of jpop song");
-                    } else {
-                        service.showTextArea(title, type);
-                    }
-                });
-                break;
-            case "Download Default Lyric File":
-                button.setOnAction(e -> {
-                    FileChooser fileChooser = new FileChooser();
-                    File file = fileChooser.showOpenDialog(stage);
-                    try {
-                        service.uploadLyricFile(file);
-                    } catch (FileNotFoundException ex) {
-                        throw new RuntimeException(ex);
-                    }
-                });
-                break;
-            case "Input Lyric File":
-                button.setOnAction(e -> {
-                    defaultLyricFile = new File("src/main/resources/lyrics/default-lyric.json");
-                    try (FileInputStream defaultLyricJsonFile = new FileInputStream(defaultLyricFile)) {
-                        downloadFile(defaultLyricJsonFile, stage);
-                    } catch (IOException ex) {
-                        throw new RuntimeException(ex);
-                    }
-                });
-                break;
 
+    public void handleButtonClick(List<Button> buttons) {
+        for (Button button : buttons) {
+            button.setOnAction(e -> {
+                ButtonAction buttonAction = buttonActions.get(button.getText());
+                if (buttonAction != null) {
+                    buttonAction.execute();
+                }
+            });
         }
     }
 
@@ -88,4 +91,6 @@ public class UIEventHandler {
             }
         }
     }
+
+    
 }

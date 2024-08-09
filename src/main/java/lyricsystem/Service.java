@@ -12,10 +12,10 @@ public class Service {
     Lyric lyric;
     ObjectMapper objectMapper = new ObjectMapper();
     static Translate translate = TranslateOptions.newBuilder().setApiKey(Dotenv.load().get("GOOGLE_API_KEY")).build().getService();
-    Main main;
+    UIInitializer uiInitializer;
 
-    Service(Main main) {
-        this.main = main;
+    Service(UIInitializer uiInitializer) {
+        this.uiInitializer = uiInitializer;
     }
 
     private String handleLyricType(String serviceType) {
@@ -33,21 +33,23 @@ public class Service {
         songTitle = songTitle.toLowerCase();
         try (InputStream inputStream = Main.class.getResourceAsStream("/lyrics/"+songTitle+".json")) {
             if (inputStream == null) {
-                Platform.runLater(() -> main.describeLabel.setText("No Lyrics JSON file found"));
+                Platform.runLater(() -> uiInitializer.describeLabel.setText("No Lyrics JSON file found"));
             }
             lyric = objectMapper.readValue(inputStream, Lyric.class);
             String infoOfTextArea = handleLyricType(serviceType);
 
             if ("words".equals(serviceType)) {
                 Platform.runLater(() -> {
-                    main.describeLabel.setText(lyric.getTitle() + " song's word and korean meaning\nIf not exist words file, make words file.");
-                    main.describeLabel.setStyle("-fx-text-fill: gray; -fx-font-size: 14px;");
+                    uiInitializer.describeLabel.setText(lyric.getTitle() + " song's word and korean meaning\nIf not exist words file, make words file.");
+                    uiInitializer.describeLabel.setStyle("-fx-text-fill: gray; -fx-font-size: 14px;");
                 });
             } else {
-                Platform.runLater(() -> main.describeLabel.setText("Artist: " + lyric.getArtist()));
-                Platform.runLater(() -> main.describeLabel.setStyle("-fx-text-fill: orange; -fx-font-size: 16px;"));
+                Platform.runLater(() -> {
+                    uiInitializer.describeLabel.setText("Artist: " + lyric.getArtist());
+                    uiInitializer.describeLabel.setStyle("-fx-text-fill: orange; -fx-font-size: 16px;");
+                });
             }
-            Platform.runLater(() -> main.textArea.setText(infoOfTextArea));
+            Platform.runLater(() -> uiInitializer.textArea.setText(infoOfTextArea));
 
 
         } catch (IllegalArgumentException | IOException e) {
@@ -64,18 +66,15 @@ public class Service {
                 while ((bytesRead = fileInputStream.read(buffer)) != -1) {
                     fileOutputStream.write(buffer,0,bytesRead);
                 }
-                Platform.runLater(() -> main.describeLabel.setText("Successfully uploaded "+uploadFile.getName()));
-                Platform.runLater(() -> main.describeLabel.setStyle("-fx-text-fill: grey;"));
-
-
+                Platform.runLater(() -> uiInitializer.describeLabel.setText("Successfully uploaded "+uploadFile.getName()));
+                Platform.runLater(() -> uiInitializer.describeLabel.setStyle("-fx-text-fill: grey;"));
             }
         } catch (IOException e) {
-            Platform.runLater(() -> main.describeLabel.setText("Failed to upload "+uploadFile.getName()));
-            Platform.runLater(() -> main.describeLabel.setStyle("-fx-text-fill: red;"));
+            Platform.runLater(() -> uiInitializer.describeLabel.setText("Failed to upload "+uploadFile.getName()));
+            Platform.runLater(() -> uiInitializer.describeLabel.setStyle("-fx-text-fill: red;"));
             e.printStackTrace();
+            return false;
         }
-
-
         return true;
     }
 

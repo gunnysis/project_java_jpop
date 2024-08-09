@@ -76,5 +76,4 @@ public class UIInitializer extends Application  {
         stage.show();
     }
 
-
 }

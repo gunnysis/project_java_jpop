@@ -29,39 +29,48 @@ public class UIInitializer extends Application  {
     public void start(Stage stage) {
         UIInitializer.stage = stage;
 
-        inputBox = new TextField();
-        inputBox.setPromptText("Input Title of jpop song");
-        serviceTypeBox = new ComboBox<>();
-        serviceTypeBox.getItems().addAll("japanese", "romaji", "words");
-        serviceTypeBox.setValue("japanese");
+        initializeComponents();
+        setupComponents();
+        setupMainLayout();
+        initializeButtonHandlers();
+    }
 
-        enterButton = new Button("Enter");
-        outputDefaultJsonFile = new Button("Download Default Lyric File");
-        inputJsonFile = new Button("Input Lyric File");
-
-        describeLabel = new Label();
-        describeLabel.setStyle("-fx-text-fill: red; -fx-font-size: 12px;");
-
-        textArea = new TextArea();
-        textArea.setEditable(false);
-        textArea.setPromptText("Text Area (Read Only)");
-
-        hbox = new HBox(10, inputBox, serviceTypeBox, enterButton);
-        hbox2 = new HBox(10, describeLabel, new HBox(), inputJsonFile, outputDefaultJsonFile);
-
-        HBox.setHgrow(inputBox, Priority.ALWAYS);
-        HBox.setHgrow(hbox2.getChildren().get(1), Priority.ALWAYS);
-
-        vbox = new VBox(10, hbox, hbox2, textArea);
-        vbox.setPadding(new Insets(10));
-
-        VBox.setVgrow(textArea, Priority.ALWAYS);
-
-        scene = new Scene(vbox, 600, 400);
-
+    private void initializeButtonHandlers() {
         UIEventHandler uiEventHandler = new UIEventHandler(this);
         List<Button> buttons = Arrays.asList(enterButton, outputDefaultJsonFile, inputJsonFile);
         uiEventHandler.handleButtonClick(buttons);
+    }
+
+    private void initializeComponents() {
+        inputBox = new TextField();
+        enterButton = new Button("Enter");
+        serviceTypeBox = new ComboBox<>();
+        outputDefaultJsonFile = new Button("Download Default Lyric File");
+        inputJsonFile = new Button("Input Lyric File");
+        describeLabel = new Label();
+        textArea = new TextArea();
+    }
+
+    private void setupComponents() {
+        inputBox.setPromptText("Input Title of jpop song");
+        serviceTypeBox.getItems().addAll("japanese", "romaji", "words");
+        serviceTypeBox.setValue("japanese");
+        describeLabel.setStyle("-fx-text-fill: red; -fx-font-size: 12px;");
+        textArea.setEditable(false);
+        textArea.setPromptText("Text Area (Read Only)");
+    }
+
+    private void setupMainLayout() {
+        hbox = new HBox(10, inputBox, serviceTypeBox, enterButton);
+        hbox2 = new HBox(10, describeLabel, new HBox(), inputJsonFile, outputDefaultJsonFile);
+        vbox = new VBox(10, hbox, hbox2, textArea);
+        vbox.setPadding(new Insets(10));
+
+        HBox.setHgrow(inputBox, Priority.ALWAYS);
+        HBox.setHgrow(hbox2.getChildren().get(1), Priority.ALWAYS);
+        VBox.setVgrow(textArea, Priority.ALWAYS);
+
+        scene = new Scene(vbox, 600, 400);
 
         stage.setScene(scene);
         stage.setTitle("Lyrics System");

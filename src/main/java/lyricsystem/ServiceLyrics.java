@@ -8,14 +8,24 @@ import javafx.application.Platform;
 
 import java.io.*;
 
-public class Service {
+public class ServiceLyrics {
     Lyric lyric;
     ObjectMapper objectMapper = new ObjectMapper();
     static Translate translate = TranslateOptions.newBuilder().setApiKey(Dotenv.load().get("GOOGLE_API_KEY")).build().getService();
     UIInitializer uiInitializer;
 
-    Service(UIInitializer uiInitializer) {
+    ServiceLyrics(UIInitializer uiInitializer) {
         this.uiInitializer = uiInitializer;
+    }
+
+    public static <T> Object readFromFile(Object source, Class<T> classType) throws IOException {
+        if (source instanceof InputStream) {
+            return (new ObjectMapper()).readValue((InputStream) source, classType);
+        } else if (source instanceof String) {
+            return (new ObjectMapper()).readValue(new File((String) source), classType);
+        } else {
+            throw new IllegalArgumentException("Unsupported source type: " + source.getClass().getName());
+        }
     }
 
     private String handleLyricType(String serviceType) {
@@ -35,7 +45,7 @@ public class Service {
             if (inputStream == null) {
                 Platform.runLater(() -> uiInitializer.describeLabel.setText("No Lyrics JSON file found"));
             }
-            lyric = objectMapper.readValue(inputStream, Lyric.class);
+            lyric = (Lyric) readFromFile(inputStream, Lyric.class);
             String infoOfTextArea = handleLyricType(serviceType);
 
             if ("words".equals(serviceType)) {

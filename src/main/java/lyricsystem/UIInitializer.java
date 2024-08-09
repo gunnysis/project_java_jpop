@@ -22,7 +22,6 @@ public class UIInitializer extends Application  {
     HBox hbox, hbox2;
     VBox vbox;
     Scene scene;
-    // Service service = new Service(this);
     File defaultLyricFile;
     static Stage stage;
 
@@ -39,8 +38,6 @@ public class UIInitializer extends Application  {
         enterButton = new Button("Enter");
         outputDefaultJsonFile = new Button("Download Default Lyric File");
         inputJsonFile = new Button("Input Lyric File");
-
-
 
         describeLabel = new Label();
         describeLabel.setStyle("-fx-text-fill: red; -fx-font-size: 12px;");

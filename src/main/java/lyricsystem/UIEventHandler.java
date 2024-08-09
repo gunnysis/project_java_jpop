@@ -18,7 +18,7 @@ public class UIEventHandler{
     Label describeLabel;
     File defaultLyricFile;
     Stage stage = UIInitializer.stage;
-    Service service;
+    ServiceLyrics serviceLyrics;
     private  Map<String, ButtonAction> buttonActions = new HashMap<>();
 
 
@@ -27,7 +27,7 @@ public class UIEventHandler{
         serviceTypeBox = uiInitializer.serviceTypeBox;
         describeLabel = uiInitializer.describeLabel;
         defaultLyricFile = uiInitializer.defaultLyricFile;
-        service =  new Service(uiInitializer);
+        serviceLyrics =  new ServiceLyrics(uiInitializer);
         initializeButtonActions();
     }
 
@@ -38,19 +38,19 @@ public class UIEventHandler{
             if (title == null || title.isEmpty()) {
                 describeLabel.setText("Input Title of jpop song");
             } else {
-                service.showTextArea(title, type);
+                serviceLyrics.showTextArea(title, type);
             }
         });
-        buttonActions.put("Download Default Lyric File", () -> {
+        buttonActions.put("Input Lyric File", () -> {
             FileChooser fileChooser = new FileChooser();
             File file = fileChooser.showOpenDialog(stage);
             try {
-                service.uploadLyricFile(file);
+                serviceLyrics.uploadLyricFile(file);
             } catch (FileNotFoundException ex) {
                 throw new RuntimeException(ex);
             }
         });
-        buttonActions.put("Input Lyric File", () -> {
+        buttonActions.put("Download Default Lyric File", () -> {
             defaultLyricFile = new File("src/main/resources/lyrics/default-lyric.json");
             try (FileInputStream defaultLyricJsonFile = new FileInputStream(defaultLyricFile)) {
                 downloadFile(defaultLyricJsonFile, stage);

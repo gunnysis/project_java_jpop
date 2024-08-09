@@ -8,7 +8,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
@@ -30,8 +29,8 @@ public class UIInitializer extends Application  {
         UIInitializer.stage = stage;
 
         initializeComponents();
-        setupComponents();
-        setupMainLayout();
+        configureComponents();
+        configureMainLayout();
         initializeButtonHandlers();
     }
 
@@ -51,7 +50,7 @@ public class UIInitializer extends Application  {
         textArea = new TextArea();
     }
 
-    private void setupComponents() {
+    private void configureComponents() {
         inputBox.setPromptText("Input Title of jpop song");
         serviceTypeBox.getItems().addAll("japanese", "romaji", "words");
         serviceTypeBox.setValue("japanese");
@@ -60,7 +59,7 @@ public class UIInitializer extends Application  {
         textArea.setPromptText("Text Area (Read Only)");
     }
 
-    private void setupMainLayout() {
+    private void configureMainLayout() {
         hbox = new HBox(10, inputBox, serviceTypeBox, enterButton);
         hbox2 = new HBox(10, describeLabel, new HBox(), inputJsonFile, outputDefaultJsonFile);
         vbox = new VBox(10, hbox, hbox2, textArea);

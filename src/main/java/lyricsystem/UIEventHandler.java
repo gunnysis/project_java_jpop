@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class UIEventHandler{
+public class UIEventHandler {
     TextField inputBox;
     ComboBox<String> serviceTypeBox;
     Label describeLabel;

@@ -29,8 +29,6 @@ dependencies {
     implementation 'io.github.cdimascio:java-dotenv:5.2.2'
     // google Cloud translate api
     implementation 'com.google.cloud:google-cloud-translate:2.47.0'
-
-    // javaFx
     // https://mvnrepository.com/artifact/org.openjfx/javafx-controls
     implementation group: 'org.openjfx', name: 'javafx-controls', version: '23-ea+22'
     implementation group: 'org.openjfx', name: 'javafx-fxml', version: '23-ea+22'

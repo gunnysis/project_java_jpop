@@ -10,7 +10,6 @@ public class Lyric {
     private String artist;
     private String lyricJapanese;
     private String lyricRomaji;
-    private String apiKeyOfMusixMatch = Dotenv.load().get("MUSIXMATCH_API_KEY");
 
     @Override
     public String toString() {

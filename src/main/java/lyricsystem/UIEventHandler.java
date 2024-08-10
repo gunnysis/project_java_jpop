@@ -19,7 +19,7 @@ public class UIEventHandler {
     File defaultLyricFile;
     Stage stage = UIInitializer.stage;
     ServiceLyrics serviceLyrics;
-    private  Map<String, ButtonAction> buttonActions = new HashMap<>();
+    private Map<String, ButtonAction> buttonActions = new HashMap<>();
 
 
     UIEventHandler(UIInitializer uiInitializer) {

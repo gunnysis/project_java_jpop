@@ -4,6 +4,7 @@ plugins {
     // javaFx
     id 'application'
     id 'org.openjfx.javafxplugin' version '0.0.13'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
 group = 'lyrics'
@@ -41,6 +42,24 @@ javafx {
 
 test {
     useJUnitPlatform()
+}
+
+// add for deploying to jar
+jar {
+    manifest {
+        attributes(
+                'Main-Class': application.mainClass // JAR 파일의 메인 클래스를 지정
+        )
+    }
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+shadowJar {
+    archiveClassifier.set('')
+    manifest {
+        attributes 'Main-Class': application.mainClass
+    }
 }
 
 application {

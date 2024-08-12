@@ -33,16 +33,20 @@ public class ServiceLyrics {
     }
 
     public void showTextArea(String songTitle, String serviceType) {
-        try (InputStream inputStream = Main.class.getResourceAsStream("/lyrics/"+songTitle.toLowerCase()+".json")) {
-            if (inputStream == null) {
-                uiInitializer.describeLabel.setText("No Lyrics JSON file found");
-            }
+        String filePath = "src/main/resources/lyrics/" + songTitle.toLowerCase() + ".json";  // 절대 경로로 수정
 
+        File file = new File(filePath);
+        if (!file.exists()) {
+            uiInitializer.describeLabel.setText("No Lyrics JSON file found");
+            return;
+        }
+
+        try (InputStream inputStream = new FileInputStream(file)) {
             lyric = (Lyric) readFromFile(inputStream, Lyric.class);
             String infoOfTextArea = handleLyricType(serviceType);
 
             if ("words".equals(serviceType)) {
-                uiInitializer.describeLabel.setText(lyric.getTitle() + " song's word and korean meaning\nIf not exist words file, make words file.");
+                uiInitializer.describeLabel.setText(lyric.getTitle() + " song's word and Korean meaning\nIf not exist words file, make words file.");
                 uiInitializer.describeLabel.setStyle("-fx-text-fill: gray; -fx-font-size: 14px;");
             } else {
                 uiInitializer.describeLabel.setText("Artist: " + lyric.getArtist());
@@ -51,7 +55,8 @@ public class ServiceLyrics {
 
             uiInitializer.textArea.setText(infoOfTextArea);
         } catch (IllegalArgumentException | IOException e) {
-            System.out.println("Not exist this song");
+            System.out.println("An error occurred: " + e.getMessage());
+            uiInitializer.describeLabel.setText("An error occurred while processing the file.");
         }
     }
 

@@ -36,7 +36,7 @@ dependencies {
 
 javafx {
     version = "23-ea+22"
-    modules = [ 'javafx.controls', 'javafx.fxml' ] // 필요한 모듈을 추가합니다
+    modules = [ 'javafx.controls', 'javafx.fxml' ]
 }
 
 test {
@@ -44,5 +44,5 @@ test {
 }
 
 application {
-    mainClass = 'lyricsystem.Main' // 메인 클래스의 경로를 설정합니다
+    mainClass = 'lyricsystem.Main'
 }

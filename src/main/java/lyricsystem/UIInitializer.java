@@ -12,6 +12,10 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
+
+/**
+ * The type Ui initializer.
+ */
 public class UIInitializer extends Application  {
     TextField inputBox;
     ComboBox<String> serviceTypeBox;
@@ -32,12 +36,6 @@ public class UIInitializer extends Application  {
         configureComponents();
         configureMainLayout();
         initializeButtonHandlers();
-    }
-
-    private void initializeButtonHandlers() {
-        UIEventHandler uiEventHandler = new UIEventHandler(this);
-        List<Button> buttons = Arrays.asList(enterButton, outputDefaultJsonFile, inputJsonFile);
-        uiEventHandler.handleButtonClick(buttons);
     }
 
     private void initializeComponents() {
@@ -74,6 +72,12 @@ public class UIInitializer extends Application  {
         stage.setScene(scene);
         stage.setTitle("Lyrics System");
         stage.show();
+    }
+
+    private void initializeButtonHandlers() {
+        UIEventHandler uiEventHandler = new UIEventHandler(this);
+        List<Button> buttons = Arrays.asList(enterButton, outputDefaultJsonFile, inputJsonFile);
+        uiEventHandler.handleButtonClick(buttons);
     }
 
 }

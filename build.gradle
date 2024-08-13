@@ -26,13 +26,14 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.30'
     // https://mvnrepository.com/artifact/org.apache.lucene/lucene-analyzers-kuromoji
     implementation group: 'org.apache.lucene', name: 'lucene-analyzers-kuromoji', version: '8.11.3'
-    // dotenv-java
-    implementation 'io.github.cdimascio:java-dotenv:5.2.2'
     // google Cloud translate api
     implementation 'com.google.cloud:google-cloud-translate:2.47.0'
     // https://mvnrepository.com/artifact/org.openjfx/javafx-controls
     implementation group: 'org.openjfx', name: 'javafx-controls', version: '23-ea+22'
     implementation group: 'org.openjfx', name: 'javafx-fxml', version: '23-ea+22'
+    // google cloud api key
+    implementation 'com.google.auth:google-auth-library-oauth2-http:1.24.0'
+
 }
 
 javafx {

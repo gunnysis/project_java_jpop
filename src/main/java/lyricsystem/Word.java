@@ -1,10 +1,10 @@
 package lyricsystem;
 
+import com.google.auth.oauth2.ServiceAccountCredentials;
 import com.google.cloud.translate.Translate;
 import com.google.cloud.translate.TranslateOptions;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import io.github.cdimascio.dotenv.Dotenv;
 import lombok.Data;
 import org.apache.lucene.analysis.ja.JapaneseTokenizer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import static lyricsystem.ServiceLyrics.readFromFile;
-
 
 @Data
 public class Word {
@@ -70,7 +69,6 @@ public class Word {
             JapaneseTokenizer tokenizer = new JapaneseTokenizer(null, false, JapaneseTokenizer.Mode.NORMAL);
             tokenizer.setReader(new StringReader(lyric.getLyricJapanese()));
 
-            HashMap<String, String> words = new HashMap<>();
             Pattern spetialCharsPattern = Pattern.compile("[\\p{Punct}\\p{IsPunctuation}\\s]");
 
             List<String> termsToTranslate = new ArrayList<>();
@@ -89,27 +87,31 @@ public class Word {
                 tokenizer.end();
 
                 termsToTranslate.parallelStream().forEach(term -> {
-                    Translate translate = TranslateOptions.newBuilder().setApiKey(Dotenv.load().get("GOOGLE_API_KEY")).build().getService();
+                    Translate translate = null;
+                    try {
+                        translate = TranslateOptions.newBuilder().setCredentials(ServiceAccountCredentials.fromStream(new FileInputStream("src/main/resources/key/google_translate_key.json"))).build().getService();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                     String translated = translate.translate(term, Translate.TranslateOption.targetLanguage("ko")).getTranslatedText();
                     translationCache.put(term, translated);
-                    words.put(term, translated);
                 });
 
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
                 tokenizer.close();
-            }
+            } /* Translate words to Korean meanings */
 
             String fileName = String.format("%s-words.json", songTitle);
             Path storeFilePath = Paths.get("src", "main", "resources", "words", fileName).toAbsolutePath();
 
             try (BufferedWriter fileWriter = Files.newBufferedWriter(storeFilePath)) {
                 Gson gson = new GsonBuilder().setPrettyPrinting().create();
-                gson.toJson(words, fileWriter);
+                gson.toJson(translationCache, fileWriter);
             } catch (IOException e) {
                 e.printStackTrace();
-            }
-        }
+            } // Write words data to json file
+        } // Read lyric file
     }
 }

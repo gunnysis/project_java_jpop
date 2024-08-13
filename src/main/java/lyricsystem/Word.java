@@ -30,7 +30,7 @@ public class Word {
     Translate translate;
     List<String> termsToTranslate;
     JapaneseTokenizer tokenizer;
-    final Pattern SPATIALCHARS_PATTERN = Pattern.compile("[\\p{Punct}\\p{IsPunctuation}\\s]");
+        final Pattern SPATIALCHARS_PATTERN = Pattern.compile("[\\p{Punct}\\p{IsPunctuation}\\s]");
 
 
     Word(String title) {

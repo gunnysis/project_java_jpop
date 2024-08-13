@@ -26,11 +26,8 @@ import static lyricsystem.ServiceLyrics.readFromFile;
 public class Word {
     public String titleOfLyric;
     Map words;
-    Main main;
     private Map cachedWords;
     private Map<String, String> translationCache = new HashMap<>();
-
-
 
     Word(String title) {
         this.titleOfLyric = title;

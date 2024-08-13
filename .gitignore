@@ -4,14 +4,15 @@ src/main/resources/lyrics/*
 src/main/resources/words/*
 !src/main/resources/words/default-word.json
 
+# api key files
+src/main/resources/key
 
 # backup folder
 src/main/resources/backup/*
 
 META-INF
 
-# env file
-.env
+
 
 .gradle
 build/

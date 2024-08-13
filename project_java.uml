@@ -3,13 +3,13 @@
   <ID>JAVA</ID>
   <OriginalElement>/Users/jeonggeonpark/Documents/project_java</OriginalElement>
   <nodes>
-    <node x="-663.5" y="-262.0">lyricsystem.UIInitializer</node>
-    <node x="-601.0" y="353.5">lyricsystem.ButtonAction</node>
-    <node x="-506.0" y="438.0">lyricsystem.Word</node>
-    <node x="-791.0" y="-60.0">lyricsystem.Lyric</node>
-    <node x="-831.5" y="549.0">lyricsystem.ServiceLyrics</node>
-    <node x="-470.0" y="942.0">lyricsystem.Main</node>
-    <node x="-820.5" y="920.0">lyricsystem.UIEventHandler</node>
+    <node x="-2256.5791443835124" y="962.6233536004238">lyricsystem.UIEventHandler</node>
+    <node x="-2227.0791443835124" y="-17.376646399576146">lyricsystem.Lyric</node>
+    <node x="-2037.0791443835121" y="396.12335360042385">lyricsystem.ButtonAction</node>
+    <node x="-2267.5791443835124" y="591.6233536004238">lyricsystem.ServiceLyrics</node>
+    <node x="-2099.5791443835124" y="-219.37664639957615">lyricsystem.UIInitializer</node>
+    <node x="-1942.0791443835121" y="480.62335360042385">lyricsystem.Word</node>
+    <node x="-1906.0791443835121" y="984.6233536004238">lyricsystem.Main</node>
   </nodes>
   <notes />
   <edges>
@@ -17,29 +17,27 @@
       <point x="0.0" y="-71.0" />
       <point x="0.0" y="160.0" />
     </edge>
-    <edge source="lyricsystem.UIEventHandler" target="lyricsystem.ButtonAction" relationship="TO_MANY">
-      <point x="0.0" y="-60.0" />
-      <point x="-667.0" y="720.0" />
-      <point x="-527.0" y="720.0" />
-      <point x="0.0" y="26.5" />
-    </edge>
     <edge source="lyricsystem.ServiceLyrics" target="lyricsystem.UIInitializer" relationship="TO_ONE">
       <point x="0.0" y="-71.0" />
-      <point x="-687.0" y="340.0" />
-      <point x="-547.0" y="340.0" />
+      <point x="-2123.0791443835124" y="340.0" />
+      <point x="-1983.0791443835124" y="340.0" />
       <point x="0.0" y="82.0" />
+    </edge>
+    <edge source="lyricsystem.UIEventHandler" target="lyricsystem.ButtonAction" relationship="TO_MANY">
+      <point x="0.0" y="-60.0" />
+      <point x="-2103.0791443835124" y="720.0" />
+      <point x="-1963.0791443835121" y="720.0" />
+      <point x="0.0" y="26.5" />
     </edge>
     <edge source="lyricsystem.UIEventHandler" target="lyricsystem.ServiceLyrics" relationship="TO_ONE">
       <point x="0.0" y="-60.0" />
-      <point x="-667.0" y="720.0" />
-      <point x="-687.0" y="720.0" />
+      <point x="-2103.0791443835124" y="720.0" />
+      <point x="-2123.0791443835124" y="720.0" />
       <point x="0.0" y="71.0" />
     </edge>
   </edges>
-  <settings layout="Hierarchic Compact" zoom="0.4001512859304085" showDependencies="true" x="-564.6257088846883" y="382.0" />
-  <SelectedNodes>
-    <node>lyricsystem.Main</node>
-  </SelectedNodes>
+  <settings layout="Hierarchic Compact" zoom="1.0194059551393242" showDependencies="true" x="-1753.6021848680261" y="-3.5351629873005095" />
+  <SelectedNodes />
   <Categories>
     <Category>Constructors</Category>
     <Category>Fields</Category>

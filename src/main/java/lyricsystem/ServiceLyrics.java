@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.*;
 
+
+
 public class ServiceLyrics {
     Lyric lyric;
     UIInitializer uiInitializer;
@@ -12,11 +14,20 @@ public class ServiceLyrics {
         this.uiInitializer = uiInitializer;
     }
 
+    /**
+     * Read from file object.
+     *
+     * @param <T>       the type parameter
+     * @param source    the source
+     * @param classType the class type
+     * @return the object
+     * @throws IOException the io exception
+     */
     public static <T> Object readFromFile(Object source, Class<T> classType) throws IOException {
         if (source instanceof InputStream) {
-            return (new ObjectMapper().readValue((InputStream) source, classType));
+            return new ObjectMapper().readValue((InputStream) source, classType);
         } else if (source instanceof String) {
-            return (new ObjectMapper().readValue(new File((String) source), classType));
+            return new ObjectMapper().readValue(new File((String) source), classType);
         } else {
             throw new IllegalArgumentException("Unsupported source type: " + source.getClass().getName());
         }
@@ -60,7 +71,7 @@ public class ServiceLyrics {
         }
     }
 
-    public boolean uploadLyricFile(File uploadFile) throws FileNotFoundException {
+    public void uploadLyricFile(File uploadFile) throws FileNotFoundException {
         try (FileInputStream fileInputStream = new FileInputStream(uploadFile)) {
             File destinationFile = new File("src/main/resources/lyrics/"+uploadFile.getName());
             byte[] buffer = new byte[4096];
@@ -76,8 +87,7 @@ public class ServiceLyrics {
             uiInitializer.describeLabel.setText("Failed to upload "+uploadFile.getName());
             uiInitializer.describeLabel.setStyle("-fx-text-fill: red;");
             e.printStackTrace();
-            return false;
         }
-        return true;
     }
+
 }

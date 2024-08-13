@@ -34,13 +34,12 @@ public class ServiceLyrics {
     }
 
     private String handleLyricType(String serviceType) {
-        String result = switch (serviceType) {
+        return switch (serviceType) {
             case "japanese" -> lyric.getLyricJapanese();
             case "romaji" -> lyric.getLyricRomaji();
             case "words" -> String.valueOf(new Word(lyric.getTitle()));
             default -> "";
         };
-        return result;
     }
 
     public void showTextArea(String songTitle, String serviceType) {

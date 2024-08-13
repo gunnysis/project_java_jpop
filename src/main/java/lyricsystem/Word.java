@@ -27,6 +27,11 @@ public class Word {
     Map words;
     private Map cachedWords;
     private Map<String, String> translationCache = new HashMap<>();
+    Translate translate;
+    List<String> termsToTranslate;
+    JapaneseTokenizer tokenizer;
+    final Pattern SPATIALCHARS_PATTERN = Pattern.compile("[\\p{Punct}\\p{IsPunctuation}\\s]");
+
 
     Word(String title) {
         this.titleOfLyric = title;
@@ -44,15 +49,50 @@ public class Word {
 
     private void loadWords() {
         try {
-            cachedWords = (Map) readFromFile("src/main/resources/words/"+this.titleOfLyric+"-words"+".json", Map.class);
+            cachedWords = (Map) readFromFile("src/main/resources/words/" + this.titleOfLyric + "-words" + ".json", Map.class);
         } catch (IOException e) {
             try {
                 extractWords(this.titleOfLyric);
-                cachedWords = (Map) readFromFile("src/main/resources/words/"+this.titleOfLyric+"-words"+".json", Map.class);
+                cachedWords = (Map) readFromFile("src/main/resources/words/" + this.titleOfLyric + "-words" + ".json", Map.class);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
         }
+    }
+
+    private void translateWords() throws IOException {
+        termsToTranslate = new ArrayList<>();
+
+        try {
+            tokenizer.reset();
+            CharTermAttribute charTermAttribute = tokenizer.addAttribute(CharTermAttribute.class);
+
+            while (tokenizer.incrementToken()) {
+                String term = charTermAttribute.toString();
+                if (!SPATIALCHARS_PATTERN.matcher(term).find() && !translationCache.containsKey(term)) {
+                    termsToTranslate.add(term);
+                }
+            }
+
+            tokenizer.end();
+
+            termsToTranslate.parallelStream().forEach(term -> {
+                try {
+                    translate = TranslateOptions.newBuilder().setCredentials(ServiceAccountCredentials
+                                    .fromStream(new FileInputStream("src/main/resources/key/google_translate_key.json")))
+                            .build().getService();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                String translated = translate.translate(term, Translate.TranslateOption.targetLanguage("ko")).getTranslatedText();
+                translationCache.put(term, translated);
+            });
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            tokenizer.close();
+        } /* Translate words to Korean meanings */
     }
 
     public void extractWords(String songTitle) throws IOException {
@@ -66,42 +106,10 @@ public class Word {
         try (InputStream inputStream = new FileInputStream(file)) {
             Lyric lyric = (Lyric) readFromFile(inputStream, Lyric.class);
 
-            JapaneseTokenizer tokenizer = new JapaneseTokenizer(null, false, JapaneseTokenizer.Mode.NORMAL);
+            tokenizer = new JapaneseTokenizer(null, false, JapaneseTokenizer.Mode.NORMAL);
             tokenizer.setReader(new StringReader(lyric.getLyricJapanese()));
 
-            Pattern spetialCharsPattern = Pattern.compile("[\\p{Punct}\\p{IsPunctuation}\\s]");
-
-            List<String> termsToTranslate = new ArrayList<>();
-
-            try {
-                tokenizer.reset();
-                CharTermAttribute charTermAttribute = tokenizer.addAttribute(CharTermAttribute.class);
-
-                while (tokenizer.incrementToken()) {
-                    String term = charTermAttribute.toString();
-                    if (!spetialCharsPattern.matcher(term).find() && !translationCache.containsKey(term)) {
-                        termsToTranslate.add(term);
-                    }
-                }
-
-                tokenizer.end();
-
-                termsToTranslate.parallelStream().forEach(term -> {
-                    Translate translate = null;
-                    try {
-                        translate = TranslateOptions.newBuilder().setCredentials(ServiceAccountCredentials.fromStream(new FileInputStream("src/main/resources/key/google_translate_key.json"))).build().getService();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                    String translated = translate.translate(term, Translate.TranslateOption.targetLanguage("ko")).getTranslatedText();
-                    translationCache.put(term, translated);
-                });
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                tokenizer.close();
-            } /* Translate words to Korean meanings */
+            translateWords();
 
             String fileName = String.format("%s-words.json", songTitle);
             Path storeFilePath = Paths.get("src", "main", "resources", "words", fileName).toAbsolutePath();

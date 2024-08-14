@@ -13,11 +13,11 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
+
+import com.atilika.kuromoji.ipadic.Tokenizer;
+import com.atilika.kuromoji.ipadic.Token;
 
 import static lyricsystem.ServiceLyrics.readFromFile;
 
@@ -30,20 +30,43 @@ public class Word {
     Translate translate;
     List<String> termsToTranslate;
     JapaneseTokenizer tokenizer;
-        final Pattern SPATIALCHARS_PATTERN = Pattern.compile("[\\p{Punct}\\p{IsPunctuation}\\s]");
+    final Pattern SPATIALCHARS_PATTERN = Pattern.compile("[\\p{Punct}\\p{IsPunctuation}\\s]");
+    // Initialize the Kuromoji tokenizer
+    Tokenizer kuromojiTokenizer = new Tokenizer();
 
 
     Word(String title) {
         this.titleOfLyric = title;
     }
 
-    @Override
-    public String toString() {
+
+
+    public String getContent() {
         if (cachedWords == null) {
             loadWords();
         }
         StringBuilder result = new StringBuilder();
+
         cachedWords.forEach((word, meaning) -> result.append(word).append(": ").append(meaning).append("\n"));
+
+
+        return result.toString();
+    }
+
+    public String getContentForRevision() {
+        StringBuilder result = new StringBuilder();
+        if(cachedWords == null) {
+            loadWords();
+        }
+
+        result.append("{").append("\n");
+        StringJoiner joiner = new StringJoiner(",\n");
+        cachedWords.forEach((word, meaning) ->
+                joiner.add("  " + "\"" + word + "\": \"" + meaning + "\"")
+        );
+        result.append(joiner);
+        result.append("\n").append("}");
+
         return result.toString();
     }
 
@@ -59,6 +82,38 @@ public class Word {
             }
         }
     }
+
+    private String katakanaToHiragana(String katakana) {
+        StringBuilder hiragana = new StringBuilder();
+        for (char c : katakana.toCharArray()) {
+            // Katakana Unicode range is U+30A0 to U+30FF
+            // Hiragana Unicode range is U+3040 to U+309F
+            if (c >= '\u30A0' && c <= '\u30FF') {
+                hiragana.append((char) (c - 0x60));
+            } else {
+                hiragana.append(c);
+            }
+        }
+        return hiragana.toString();
+    }
+
+    public String convertToHiragana(Tokenizer kuromojiTokenizer, String kanjiText) {
+        StringBuilder hiragana = new StringBuilder();
+
+        // Tokenize the input text and convert each token to Hiragana
+        for (Token token : kuromojiTokenizer.tokenize(kanjiText)) {
+            String reading = token.getReading();
+            if (reading != null) {
+                hiragana.append(katakanaToHiragana(reading));
+            } else {
+                // If the token is already in Hiragana or is non-Kanji, add it directly
+                hiragana.append(token.getSurface());
+            }
+        }
+        return hiragana.toString();
+    }
+
+
 
     private void translateWords() throws IOException {
         termsToTranslate = new ArrayList<>();
@@ -84,8 +139,11 @@ public class Word {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
+                // term 변수 값을 히라가나 값으로 변환 후 String hiraganaOfTerm 변수의 변수값으로 할당
+                String allHiraganaWord = convertToHiragana(kuromojiTokenizer, term);
                 String translated = translate.translate(term, Translate.TranslateOption.targetLanguage("ko")).getTranslatedText();
-                translationCache.put(term, translated);
+                String infoOfterm = "[" + allHiraganaWord + "]" + " : " + translated;
+                translationCache.put(term, infoOfterm);
             });
 
         } catch (IOException e) {
@@ -96,7 +154,7 @@ public class Word {
     }
 
     public void extractWords(String songTitle) throws IOException {
-        String filePath = "src/main/resources/lyrics/" + songTitle.toLowerCase() + ".json";
+        String filePath = "src/main/resources/lyrics/" + songTitle.toLowerCase() + "-lyric" + ".json";
         File file = new File(filePath);
 
         if (!file.exists()) {
@@ -122,4 +180,6 @@ public class Word {
             } // Write words data to json file
         } // Read lyric file
     }
+
+
 }

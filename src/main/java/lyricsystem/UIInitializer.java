@@ -19,10 +19,10 @@ import java.util.List;
 public class UIInitializer extends Application  {
     TextField inputBox;
     ComboBox<String> serviceTypeBox;
-    Button enterButton, outputDefaultJsonFile, inputJsonFile;
+    Button enterButton, outputDefaultJsonFileButton, inputJsonFileButton, modifyContentButton;
     Label describeLabel;
     TextArea textArea;
-    HBox hbox, hbox2;
+    HBox hbox, hbox2, hbox3;
     VBox vbox;
     Scene scene;
     File defaultLyricFile;
@@ -42,8 +42,9 @@ public class UIInitializer extends Application  {
         inputBox = new TextField();
         enterButton = new Button("Enter");
         serviceTypeBox = new ComboBox<>();
-        outputDefaultJsonFile = new Button("Download Default Lyric File");
-        inputJsonFile = new Button("Input Lyric File");
+        outputDefaultJsonFileButton = new Button("Download Default Lyric File");
+        inputJsonFileButton = new Button("Upload Lyric File");
+        modifyContentButton = new Button("Modify Content");
         describeLabel = new Label();
         textArea = new TextArea();
     }
@@ -55,19 +56,20 @@ public class UIInitializer extends Application  {
         describeLabel.setStyle("-fx-text-fill: red; -fx-font-size: 12px;");
         textArea.setEditable(false);
         textArea.setPromptText("Text Area (Read Only)");
+        modifyContentButton.setDisable(true);
     }
 
     private void configureMainLayout() {
         hbox = new HBox(10, inputBox, serviceTypeBox, enterButton);
-        hbox2 = new HBox(10, describeLabel, new HBox(), inputJsonFile, outputDefaultJsonFile);
-        vbox = new VBox(10, hbox, hbox2, textArea);
+        hbox2 = new HBox(10, describeLabel);
+        hbox3 = new HBox(10, inputJsonFileButton, outputDefaultJsonFileButton, modifyContentButton);
+        vbox = new VBox(10, hbox, hbox2, hbox3, textArea);
         vbox.setPadding(new Insets(10));
 
         HBox.setHgrow(inputBox, Priority.ALWAYS);
-        HBox.setHgrow(hbox2.getChildren().get(1), Priority.ALWAYS);
         VBox.setVgrow(textArea, Priority.ALWAYS);
 
-        scene = new Scene(vbox, 600, 400);
+        scene = new Scene(vbox, 600, 500);
 
         stage.setScene(scene);
         stage.setTitle("Lyrics System");
@@ -76,7 +78,7 @@ public class UIInitializer extends Application  {
 
     private void initializeButtonHandlers() {
         UIEventHandler uiEventHandler = new UIEventHandler(this);
-        List<Button> buttons = Arrays.asList(enterButton, outputDefaultJsonFile, inputJsonFile);
+        List<Button> buttons = Arrays.asList(enterButton, outputDefaultJsonFileButton, inputJsonFileButton, modifyContentButton);
         uiEventHandler.handleButtonClick(buttons);
     }
 

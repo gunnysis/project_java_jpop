@@ -1,5 +1,7 @@
 package lyricsystem;
 
+import java.io.IOException;
+
 public interface ButtonAction {
-    void execute();
+    void execute() throws IOException;
 }

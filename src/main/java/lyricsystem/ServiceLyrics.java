@@ -1,10 +1,7 @@
 package lyricsystem;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import java.io.*;
-
-
 
 public class ServiceLyrics {
     Lyric lyric;
@@ -37,17 +34,17 @@ public class ServiceLyrics {
         return switch (serviceType) {
             case "japanese" -> lyric.getLyricJapanese();
             case "romaji" -> lyric.getLyricRomaji();
-            case "words" -> String.valueOf(new Word(lyric.getTitle()));
+            case "words" -> String.valueOf(new Word(lyric.getTitle()).getContentForRevision());
             default -> "";
         };
     }
 
     public void showTextArea(String songTitle, String serviceType) {
-        String filePath = "src/main/resources/lyrics/" + songTitle.toLowerCase() + ".json";  // 절대 경로로 수정
+        String filePath = "src/main/resources/lyrics/" + songTitle.toLowerCase() + "-lyric" + ".json";  // 절대 경로로 수정
 
         File file = new File(filePath);
         if (!file.exists()) {
-            uiInitializer.describeLabel.setText("No Lyrics JSON file found");
+            uiInitializer.describeLabel.setText("No Lyrics JSON file found ");
             return;
         }
 
@@ -56,7 +53,7 @@ public class ServiceLyrics {
             String infoOfTextArea = handleLyricType(serviceType);
 
             if ("words".equals(serviceType)) {
-                uiInitializer.describeLabel.setText(lyric.getTitle() + " song's word and Korean meaning\nIf not exist words file, make words file.");
+                uiInitializer.describeLabel.setText(lyric.getTitle() + " song's word and Korean meaning If not exist words file, make words file.");
                 uiInitializer.describeLabel.setStyle("-fx-text-fill: gray; -fx-font-size: 14px;");
             } else {
                 uiInitializer.describeLabel.setText("Artist: " + lyric.getArtist());
@@ -72,7 +69,8 @@ public class ServiceLyrics {
 
     public void uploadLyricFile(File uploadFile) throws FileNotFoundException {
         try (FileInputStream fileInputStream = new FileInputStream(uploadFile)) {
-            File destinationFile = new File("src/main/resources/lyrics/"+uploadFile.getName());
+            String fileNameWithoutExtension = uploadFile.getName().split("\\.")[0];
+            File destinationFile = new File("src/main/resources/lyrics/"+ fileNameWithoutExtension + "-lyric" + ".json");
             byte[] buffer = new byte[4096];
 
             try(FileOutputStream fileOutputStream = new FileOutputStream(destinationFile)) {

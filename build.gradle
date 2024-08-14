@@ -33,6 +33,9 @@ dependencies {
     implementation group: 'org.openjfx', name: 'javafx-fxml', version: '23-ea+22'
     // google cloud api key
     implementation 'com.google.auth:google-auth-library-oauth2-http:1.24.0'
+    // https://mvnrepository.com/artifact/com.atilika.kuromoji/kuromoji-ipadic
+    implementation 'com.atilika.kuromoji:kuromoji-ipadic:0.9.0'
+
 
 }
 

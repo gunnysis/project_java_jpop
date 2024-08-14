@@ -19,7 +19,7 @@ import java.util.List;
 public class UIInitializer extends Application  {
     TextField inputBox;
     ComboBox<String> serviceTypeBox;
-    Button enterButton, outputDefaultJsonFileButton, inputJsonFileButton, modifyContentButton;
+    Button enterButton, outputDefaultJsonFileButton, inputJsonFileButton, modifyContentButton, searchButton;
     Label describeLabel;
     TextArea textArea;
     HBox hbox, hbox2, hbox3;
@@ -41,10 +41,11 @@ public class UIInitializer extends Application  {
     private void initializeComponents() {
         inputBox = new TextField();
         enterButton = new Button("Enter");
-        serviceTypeBox = new ComboBox<>();
-        outputDefaultJsonFileButton = new Button("Download Default Lyric File");
         inputJsonFileButton = new Button("Upload Lyric File");
         modifyContentButton = new Button("Modify Content");
+        searchButton = new Button("Search");
+        serviceTypeBox = new ComboBox<>();
+        outputDefaultJsonFileButton = new Button("Download Default Lyric File");
         describeLabel = new Label();
         textArea = new TextArea();
     }
@@ -56,13 +57,14 @@ public class UIInitializer extends Application  {
         describeLabel.setStyle("-fx-text-fill: red; -fx-font-size: 12px;");
         textArea.setEditable(false);
         textArea.setPromptText("Text Area (Read Only)");
+        textArea.setWrapText(true);
         modifyContentButton.setDisable(true);
     }
 
     private void configureMainLayout() {
         hbox = new HBox(10, inputBox, serviceTypeBox, enterButton);
         hbox2 = new HBox(10, describeLabel);
-        hbox3 = new HBox(10, inputJsonFileButton, outputDefaultJsonFileButton, modifyContentButton);
+        hbox3 = new HBox(10, inputJsonFileButton, outputDefaultJsonFileButton, modifyContentButton, searchButton);
         vbox = new VBox(10, hbox, hbox2, hbox3, textArea);
         vbox.setPadding(new Insets(10));
 
@@ -78,7 +80,7 @@ public class UIInitializer extends Application  {
 
     private void initializeButtonHandlers() {
         UIEventHandler uiEventHandler = new UIEventHandler(this);
-        List<Button> buttons = Arrays.asList(enterButton, outputDefaultJsonFileButton, inputJsonFileButton, modifyContentButton);
+        List<Button> buttons = Arrays.asList(enterButton, outputDefaultJsonFileButton, inputJsonFileButton, modifyContentButton, searchButton);
         uiEventHandler.handleButtonClick(buttons);
     }
 

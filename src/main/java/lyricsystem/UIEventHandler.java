@@ -97,6 +97,25 @@ public class UIEventHandler {
             describeLabel.setStyle("-fx-text-fill: gray; -fx-font-size: 14px;");
         });
         buttonActions.put("Search Meaning", this::showSearchWindow);
+        buttonActions.put("File List", () -> {
+            textArea.setText(showLyricFiles());
+        });
+    }
+
+    private String showLyricFiles() {
+        String lyricDirPath = "src/main/resources/lyrics";
+        File lyricDir = new File(lyricDirPath);
+        File[] listOfFiles = lyricDir.listFiles();
+        StringBuffer listOfFileName = new StringBuffer();
+
+        if (listOfFiles != null) {
+            for (File file : listOfFiles) {
+                if (file.isFile() && !file.getName().equals("titleNameOfSong.json")) {
+                    listOfFileName.append(file.getName(), 0, file.getName().indexOf('-')).append("\n");
+                }
+            }
+        }
+        return  listOfFileName.toString();
     }
 
     public void showSearchWindow() {

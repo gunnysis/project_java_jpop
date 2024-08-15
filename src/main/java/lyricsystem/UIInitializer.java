@@ -19,7 +19,7 @@ import java.util.List;
 public class UIInitializer extends Application  {
     TextField inputBox;
     ComboBox<String> serviceTypeBox;
-    Button enterButton, outputDefaultJsonFileButton, inputJsonFileButton, modifyContentButton, searchButton;
+    Button enterButton, outputDefaultJsonFileButton, inputJsonFileButton, modifyContentButton, searchButton, fileListButton;
     Label describeLabel;
     TextArea textArea;
     HBox hbox, hbox2, hbox3;
@@ -43,6 +43,7 @@ public class UIInitializer extends Application  {
         enterButton = new Button("Enter");
         inputJsonFileButton = new Button("Upload Lyric File");
         modifyContentButton = new Button("Modify Content");
+        fileListButton = new Button("File List");
         searchButton = new Button("Search Meaning");
         serviceTypeBox = new ComboBox<>();
         outputDefaultJsonFileButton = new Button("Download Default Lyric File");
@@ -65,7 +66,7 @@ public class UIInitializer extends Application  {
     private void configureMainLayout() {
         hbox = new HBox(10, inputBox, serviceTypeBox, enterButton);
         hbox2 = new HBox(10, describeLabel);
-        hbox3 = new HBox(10, inputJsonFileButton, outputDefaultJsonFileButton, modifyContentButton, searchButton);
+        hbox3 = new HBox(10, inputJsonFileButton, outputDefaultJsonFileButton, modifyContentButton, searchButton, fileListButton);
         vbox = new VBox(10, hbox, hbox2, hbox3, textArea);
         vbox.setPadding(new Insets(10));
 
@@ -81,7 +82,7 @@ public class UIInitializer extends Application  {
 
     private void initializeButtonHandlers() {
         UIEventHandler uiEventHandler = new UIEventHandler(this);
-        List<Button> buttons = Arrays.asList(enterButton, outputDefaultJsonFileButton, inputJsonFileButton, modifyContentButton, searchButton);
+        List<Button> buttons = Arrays.asList(enterButton, outputDefaultJsonFileButton, inputJsonFileButton, modifyContentButton, searchButton, fileListButton);
         uiEventHandler.handleButtonClick(buttons);
     }
 

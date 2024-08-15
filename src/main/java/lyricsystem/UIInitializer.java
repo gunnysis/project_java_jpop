@@ -43,7 +43,7 @@ public class UIInitializer extends Application  {
         enterButton = new Button("Enter");
         inputJsonFileButton = new Button("Upload Lyric File");
         modifyContentButton = new Button("Modify Content");
-        searchButton = new Button("Search");
+        searchButton = new Button("Search Meaning");
         serviceTypeBox = new ComboBox<>();
         outputDefaultJsonFileButton = new Button("Download Default Lyric File");
         describeLabel = new Label();

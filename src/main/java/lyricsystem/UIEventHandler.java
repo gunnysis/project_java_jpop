@@ -96,7 +96,7 @@ public class UIEventHandler {
             describeLabel.setText("Modified to Word Json File");
             describeLabel.setStyle("-fx-text-fill: gray; -fx-font-size: 14px;");
         });
-        buttonActions.put("Search", this::showSearchWindow);
+        buttonActions.put("Search Meaning", this::showSearchWindow);
     }
 
     public void showSearchWindow() {

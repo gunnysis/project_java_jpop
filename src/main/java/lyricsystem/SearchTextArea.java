@@ -15,6 +15,8 @@ import javafx.geometry.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
+
+// Reference: https://stackoverflow.com/questions/77124891/how-to-search-and-format-text-block-in-text-area-with-javafx
 class SearchTextArea {
     public TextArea textArea;
     /**

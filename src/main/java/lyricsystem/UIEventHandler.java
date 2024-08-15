@@ -24,6 +24,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static lyricsystem.ServiceLyrics.readFromFile;
+
 
 public class UIEventHandler {
     TextField inputBox;
@@ -34,7 +36,8 @@ public class UIEventHandler {
     ServiceLyrics serviceLyrics;
     TextArea textArea;
     Button modifyContentButton;
-    SearchTextArea searchTextArea;
+    String title;
+    String type;
 
     private Map<String, ButtonAction> buttonActions = new HashMap<>();
 
@@ -52,8 +55,8 @@ public class UIEventHandler {
 
     private void initializeButtonActions() {
         buttonActions.put("Enter", () -> {
-            String title = inputBox.getText();
-            String type = serviceTypeBox.getValue();
+            title = inputBox.getText();
+            type = serviceTypeBox.getValue();
             if (title == null || title.isEmpty()) {
                 describeLabel.setText("Input Title of jpop song");
                 describeLabel.setStyle("-fx-text-fill: red;");
@@ -85,7 +88,7 @@ public class UIEventHandler {
             }
         });
         buttonActions.put("Modify Content", () -> {
-            String title = inputBox.getText();
+            title = inputBox.getText();
             String type = serviceTypeBox.getValue();
             String modifyContent = textArea.getText();
 
@@ -97,52 +100,50 @@ public class UIEventHandler {
     }
 
     public void showSearchWindow() {
-        searchTextArea = new SearchTextArea(textArea);
-        IntegerProperty index = new SimpleIntegerProperty(-1);
-
-        TextField textField = new TextField();
-        textField.textProperty().addListener(p -> index.set(-1));
-        HBox pane = new HBox(10, new Label("Enter the search phrase"), textField);
-
-        Button nextBtn = new Button("Next");
-        Button prevBtn = new Button("Previous");
-        nextBtn.setOnAction(e1 -> handleSearch(textField.getText(), true, searchTextArea, index));
-        prevBtn.setOnAction(e1 -> handleSearch(textField.getText(), false, searchTextArea, index));
-        HBox btnPane = new HBox(10, nextBtn, prevBtn);
-        btnPane.setAlignment(Pos.CENTER);
-
-        VBox root = new VBox(20, pane, btnPane);
+        TextField searchTextField = new TextField();
+        Button searchButton = new Button("Search");
+        HBox panel = new HBox(10, new Label("Word"), searchTextField, searchButton);
+        panel.setAlignment(Pos.CENTER);
+        Label meaningLabel = new Label();
+        VBox root = new VBox(15, panel, meaningLabel);
         root.setPadding(new Insets(20));
-
         Stage dialog = new Stage();
-        dialog.setOnCloseRequest(event -> {
-            searchTextArea.removeHighlight();
+
+        searchButton.setOnAction( e -> {
+            String searchText = searchTextField.getText();
+            String searchedMeaningOfWord = "";
+            if (searchText == null && searchText.isEmpty()) {
+                Platform.runLater(() -> meaningLabel.setText("Input word"));
+            }
+            else {
+                try {
+                    searchedMeaningOfWord = searchMeaningOfWord(searchText);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+            final String finalSearchedMeaningOfWord = searchedMeaningOfWord;
+            Platform.runLater(() -> meaningLabel.setText(finalSearchedMeaningOfWord));
         });
+
         dialog.initStyle(StageStyle.UTILITY);
         dialog.setTitle("Find");
-        dialog.setScene(new Scene(root, 350, 150));
+        dialog.setScene(new Scene(root));
+        dialog.setWidth(320);
+        dialog.setHeight(150);
         dialog.show();
     }
 
-    private void handleSearch(final String text, final boolean isNext, SearchTextArea searchTextArea, IntegerProperty index) {
-        if (text == null || text.isEmpty()) {
-            return;
+    public String searchMeaningOfWord(String searchText) throws IOException {
+        Map targetWordFile = (Map) readFromFile("src/main/resources/words/" + title + "-words" + ".json", Map.class);
+        String meaning = (String) targetWordFile.get(searchText);
+
+        if (meaning == null) {
+            meaning = "Word not found"; // 기본 메시지 설정
         }
 
-        int newIndex = isNext ? index.get() + 1 : index.get() - 1;
-        Pattern pattern = Pattern.compile(text);
-        Matcher matcher = pattern.matcher(searchTextArea.textArea.getText());
-        int count = 0;
-        while (matcher.find()) {
-            if (count == newIndex) {
-                searchTextArea.highlightRange(matcher.start(), matcher.end() - 1);
-                index.set(newIndex);
-                break;
-            }
-            count++;
-        }
+        return meaning;
     }
-
 
     public void handleButtonClick(List<Button> buttons) {
         for (Button button : buttons) {

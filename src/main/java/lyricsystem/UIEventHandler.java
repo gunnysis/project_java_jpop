@@ -61,6 +61,8 @@ public class UIEventHandler {
                 if (type.equals("words")) {
                     modifyContentButton.setDisable(false);
                     textArea.setEditable(true);
+                } else {
+                    modifyContentButton.setDisable(true);
                 }
                 serviceLyrics.showTextArea(title, type);
             }
@@ -92,7 +94,6 @@ public class UIEventHandler {
             describeLabel.setStyle("-fx-text-fill: gray; -fx-font-size: 14px;");
         });
         buttonActions.put("Search", this::showSearchWindow);
-
     }
 
     public void showSearchWindow() {

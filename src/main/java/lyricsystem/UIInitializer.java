@@ -58,6 +58,7 @@ public class UIInitializer extends Application  {
         textArea.setEditable(false);
         textArea.setPromptText("Text Area (Read Only)");
         textArea.setWrapText(true);
+        textArea.setStyle("-fx-font-size: 20px;");
         modifyContentButton.setDisable(true);
     }
 

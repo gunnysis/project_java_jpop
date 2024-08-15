@@ -138,11 +138,7 @@ public class UIEventHandler {
         Map targetWordFile = (Map) readFromFile("src/main/resources/words/" + title + "-words" + ".json", Map.class);
         String meaning = (String) targetWordFile.get(searchText);
 
-        if (meaning == null) {
-            meaning = "Word not found"; // 기본 메시지 설정
-        }
-
-        return meaning;
+        return meaning == null ? "Word not found" : meaning;
     }
 
     public void handleButtonClick(List<Button> buttons) {

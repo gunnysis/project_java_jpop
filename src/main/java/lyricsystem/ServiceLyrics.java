@@ -108,6 +108,10 @@ public class ServiceLyrics {
                 gson.toJson(jsonObject, fileWriter);
                 uiInitializer.describeLabel.setText(isJsonFixed ? "Successfully uploaded and fixed " + uploadFile.getName() : "Successfully uploaded " + uploadFile.getName());
                 uiInitializer.describeLabel.setStyle("-fx-text-fill: grey;");
+            } catch (FileNotFoundException e) {
+                uiInitializer.describeLabel.setText("File not found");
+                uiInitializer.describeLabel.setStyle("-fx-text-fill: red;");
+                System.out.println("An FileNotFound error occurred: " + e.getMessage());
             }
 
         } catch (IOException e) {

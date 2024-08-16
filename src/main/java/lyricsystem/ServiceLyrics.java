@@ -1,7 +1,14 @@
 package lyricsystem;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.*;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 
 public class ServiceLyrics {
     Lyric lyric;
@@ -67,24 +74,97 @@ public class ServiceLyrics {
         }
     }
 
-    public void uploadLyricFile(File uploadFile) throws FileNotFoundException {
-        try (FileInputStream fileInputStream = new FileInputStream(uploadFile)) {
-            String fileNameWithoutExtension = uploadFile.getName().split("\\.")[0];
-            File destinationFile = new File("src/main/resources/lyrics/"+ fileNameWithoutExtension + "-lyric" + ".json");
-            byte[] buffer = new byte[4096];
 
-            try(FileOutputStream fileOutputStream = new FileOutputStream(destinationFile)) {
-                for (int bytesRead; (bytesRead = fileInputStream.read(buffer)) != -1;) {
-                    fileOutputStream.write(buffer,0,bytesRead);
-                }
-                uiInitializer.describeLabel.setText("Successfully uploaded "+uploadFile.getName());
+
+    public void uploadLyricFile(File uploadFile) throws FileNotFoundException {
+        try (BufferedReader fileReader = new BufferedReader(new FileReader(uploadFile))) {
+            StringBuilder jsonContent = new StringBuilder();
+            String line;
+            while ((line = fileReader.readLine()) != null) {
+                jsonContent.append(line).append("\n");
+            }
+
+            JsonObject jsonObject = null;
+            boolean isJsonFixed = false;
+
+            try {
+                jsonObject = JsonParser.parseString(jsonContent.toString()).getAsJsonObject();
+            } catch (JsonSyntaxException e) {
+                isJsonFixed = true;
+
+                uiInitializer.describeLabel.setText("Invalid JSON format detected. Attempting to fix...");
+                uiInitializer.describeLabel.setStyle("-fx-text-fill: orange;");
+                System.out.println("This file is not a valid JSON file");
+
+                // 유효하지 않은 JSON 데이터를 수동으로 수정하여 재구성
+                jsonObject = manualJsonFix(jsonContent.toString());
+            }
+
+            // JSON 파일 저장 처리
+            String fileName = uploadFile.getName();
+            String fileNameWithoutExtension = fileName.substring(0, fileName.lastIndexOf("."));
+            File destinationFile = new File("src/main/resources/lyrics/" + fileNameWithoutExtension + "-lyric" + ".json");
+
+            try (FileWriter fileWriter = new FileWriter(destinationFile)) {
+                Gson gson = new GsonBuilder().setPrettyPrinting().create();
+                gson.toJson(jsonObject, fileWriter);
+                uiInitializer.describeLabel.setText(isJsonFixed ? "Successfully uploaded and fixed " + uploadFile.getName() : "Successfully uploaded " + uploadFile.getName());
                 uiInitializer.describeLabel.setStyle("-fx-text-fill: grey;");
             }
+
         } catch (IOException e) {
-            uiInitializer.describeLabel.setText("Failed to upload "+uploadFile.getName());
+            uiInitializer.describeLabel.setText("Failed to upload " + uploadFile.getName());
             uiInitializer.describeLabel.setStyle("-fx-text-fill: red;");
             e.printStackTrace();
         }
     }
+
+    private JsonObject manualJsonFix(String jsonString) {
+        JsonObject jsonObject = new JsonObject();
+
+        try {
+            String title = extractFieldValue(jsonString, "title");
+            String artist = extractFieldValue(jsonString, "artist");
+            String lyricJapanese = extractFieldValue(jsonString, "lyricJapanese");
+            String lyricRomaji = extractFieldValue(jsonString, "lyricRomaji");
+
+            // 추출한 값을 JSON 객체에 추가
+            jsonObject.addProperty("title", title);
+            jsonObject.addProperty("artist", artist);
+            jsonObject.addProperty("lyricJapanese", lyricJapanese);
+            jsonObject.addProperty("lyricRomaji", lyricRomaji);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            uiInitializer.describeLabel.setText("Failed to fix the invalid JSON format.");
+            uiInitializer.describeLabel.setStyle("-fx-text-fill: red;");
+        }
+
+        return jsonObject;
+    }
+
+    private String extractFieldValue(String jsonString, String fieldName) {
+        int startIndex = jsonString.indexOf("\"" + fieldName + "\":") + fieldName.length() + 3;
+        int endIndex = jsonString.indexOf("\",", startIndex);
+
+        if (endIndex == -1) {
+            endIndex = jsonString.indexOf("\"\n", startIndex);
+        }
+
+        if (endIndex == -1) {
+            endIndex = jsonString.length() - 1;
+        }
+
+        String value = jsonString.substring(startIndex, endIndex).trim();
+
+        // 앞에만 추가된 불필요한 따옴표(")를 제거
+        if (value.startsWith("\"")) {
+            value = value.substring(1);
+        }
+
+        return value;
+    }
+
+
 
 }

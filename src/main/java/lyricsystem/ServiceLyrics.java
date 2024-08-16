@@ -158,10 +158,21 @@ public class ServiceLyrics {
     }
 
     private static int getEndIndex(String jsonString, int startIndex) {
-        int endIndex = jsonString.indexOf("\",", startIndex); // Ex. "artist": "SEKAI NO OWARI",
+        int endIndex = 0;
+        endIndex = jsonString.indexOf("\",", startIndex); // Ex. "artist": "SEKAI NO OWARI",
 
         // The reason the endIndex == -1 condition is repeated is to handle the next possible scenario
         // when endIndex wasn't found in the previous step (i.e., when it's -1).
+
+        if (endIndex != -1
+                && (
+                        (endIndex + 2 >= jsonString.length() && jsonString.charAt(endIndex + 2) != ' ') /* Ex. We named "the life of phantom",TSUKUSHI */
+                        || (endIndex + 2 >= jsonString.length() && jsonString.charAt(endIndex + 2) == ' ') /* Ex. We named "the life of phantom", TSUKUSHI */
+                )
+        ) {
+            endIndex = jsonString.indexOf("\",", endIndex + 2);
+        }
+
         if (endIndex == -1) {
             endIndex = jsonString.indexOf("\"\n", startIndex); // Ex. arigatou gozaimazu"
         }

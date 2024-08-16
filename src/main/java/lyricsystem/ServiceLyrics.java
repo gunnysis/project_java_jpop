@@ -149,26 +149,28 @@ public class ServiceLyrics {
     }
 
     private String extractFieldValue(String jsonString, String fieldName) {
-        int startIndex = jsonString.indexOf("\"" + fieldName + "\":") + fieldName.length() + 3;
-        int endIndex = jsonString.indexOf("\",", startIndex);
+        int startIndex = jsonString.indexOf("\"" + fieldName + "\":") + fieldName.length() + 3; // "title": "r -> r's index
 
-        if (endIndex == -1) {
-            endIndex = jsonString.indexOf("\"\n", startIndex);
-        }
+        int endIndex = getEndIndex(jsonString, startIndex);
 
-        if (endIndex == -1) {
-            endIndex = jsonString.length() - 1;
-        }
-
-        String value = jsonString.substring(startIndex, endIndex).trim();
-
-        if (value.startsWith("\"")) {
-            value = value.substring(1);
-        }
-
-        return value;
+        String value = jsonString.substring(startIndex, endIndex).trim(); // startIndex ~ endIndex -1
+        return (value.startsWith("\"")) ? value.substring(1) : value;
     }
 
+    private static int getEndIndex(String jsonString, int startIndex) {
+        int endIndex = jsonString.indexOf("\",", startIndex); // Ex. "artist": "SEKAI NO OWARI",
+
+        // The reason the endIndex == -1 condition is repeated is to handle the next possible scenario
+        // when endIndex wasn't found in the previous step (i.e., when it's -1).
+        if (endIndex == -1) {
+            endIndex = jsonString.indexOf("\"\n", startIndex); // Ex. arigatou gozaimazu"
+        }
+
+        if (endIndex == -1) {
+            endIndex = jsonString.length() - 1; // Ex. }
+        }
+        return endIndex;
+    }
 
 
 }

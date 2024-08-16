@@ -97,7 +97,7 @@ public class UIEventHandler {
             describeLabel.setStyle("-fx-text-fill: gray; -fx-font-size: 14px;");
         });
         buttonActions.put("Search Meaning", this::showSearchWindow);
-        buttonActions.put("File List", () -> {
+        buttonActions.put("Titles", () -> {
             textArea.setText(showLyricFiles());
         });
     }

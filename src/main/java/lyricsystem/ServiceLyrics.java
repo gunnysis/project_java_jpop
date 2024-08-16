@@ -96,11 +96,9 @@ public class ServiceLyrics {
                 uiInitializer.describeLabel.setStyle("-fx-text-fill: orange;");
                 System.out.println("This file is not a valid JSON file");
 
-                // 유효하지 않은 JSON 데이터를 수동으로 수정하여 재구성
                 jsonObject = manualJsonFix(jsonContent.toString());
             }
 
-            // JSON 파일 저장 처리
             String fileName = uploadFile.getName();
             String fileNameWithoutExtension = fileName.substring(0, fileName.lastIndexOf("."));
             File destinationFile = new File("src/main/resources/lyrics/" + fileNameWithoutExtension + "-lyric" + ".json");
@@ -128,7 +126,6 @@ public class ServiceLyrics {
             String lyricJapanese = extractFieldValue(jsonString, "lyricJapanese");
             String lyricRomaji = extractFieldValue(jsonString, "lyricRomaji");
 
-            // 추출한 값을 JSON 객체에 추가
             jsonObject.addProperty("title", title);
             jsonObject.addProperty("artist", artist);
             jsonObject.addProperty("lyricJapanese", lyricJapanese);
@@ -157,7 +154,6 @@ public class ServiceLyrics {
 
         String value = jsonString.substring(startIndex, endIndex).trim();
 
-        // 앞에만 추가된 불필요한 따옴표(")를 제거
         if (value.startsWith("\"")) {
             value = value.substring(1);
         }

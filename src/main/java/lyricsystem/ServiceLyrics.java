@@ -104,8 +104,12 @@ public class ServiceLyrics {
             File destinationFile = new File("src/main/resources/lyrics/" + fileNameWithoutExtension + "-lyric" + ".json");
 
             try (FileWriter fileWriter = new FileWriter(destinationFile)) {
-                Gson gson = new GsonBuilder().setPrettyPrinting().create();
-                gson.toJson(jsonObject, fileWriter);
+                if (isJsonFixed) {
+                    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+                    gson.toJson(jsonObject, fileWriter);
+                } else {
+                    fileWriter.write(jsonContent.toString());
+                }
                 uiInitializer.describeLabel.setText(isJsonFixed ? "Successfully uploaded and fixed " + uploadFile.getName() : "Successfully uploaded " + uploadFile.getName());
                 uiInitializer.describeLabel.setStyle("-fx-text-fill: grey;");
             } catch (FileNotFoundException e) {

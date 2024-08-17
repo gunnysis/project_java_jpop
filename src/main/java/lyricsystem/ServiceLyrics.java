@@ -140,9 +140,9 @@ public class ServiceLyrics {
             jsonObject.addProperty("lyricRomaji", lyricRomaji);
 
         } catch (Exception e) {
-            e.printStackTrace();
             uiInitializer.describeLabel.setText("Failed to fix the invalid JSON format.");
             uiInitializer.describeLabel.setStyle("-fx-text-fill: red;");
+            e.printStackTrace();
         }
 
         return jsonObject;

@@ -4,8 +4,6 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -17,15 +15,9 @@ import javafx.geometry.Pos;
 import javafx.stage.StageStyle;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static lyricsystem.ServiceLyrics.readFromFile;
 
@@ -42,7 +34,7 @@ public class UIEventHandler {
     String title;
     String type;
 
-    private Map<String, ButtonAction> buttonActions = new HashMap<>();
+    private final Map<String, ButtonAction> buttonActions = new HashMap<>();
 
 
     UIEventHandler(UIInitializer uiInitializer) {
@@ -96,7 +88,8 @@ public class UIEventHandler {
             String modifyContent = textArea.getText();
 
             String message = modifyContentOfWordFile(title, modifyContent) ?
-                    "Modified to Word Json File" : "Please use letters, numbers, spaces, \nand most special characters (except for double quotes and backslashes)";
+                    "Modified to Word Json File" :
+                    "Please use letters, numbers, spaces, \nand most special characters (except for double quotes and backslashes)";
             describeLabel.setText(message);
             describeLabel.setStyle("-fx-text-fill: gray; -fx-font-size: 14px;");
         });
@@ -110,7 +103,7 @@ public class UIEventHandler {
         String lyricDirPath = "src/main/resources/lyrics";
         File lyricDir = new File(lyricDirPath);
         File[] listOfFiles = lyricDir.listFiles();
-        StringBuffer listOfFileName = new StringBuffer();
+        StringBuilder listOfFileName = new StringBuilder();
 
         if (listOfFiles != null) {
             for (File file : listOfFiles) {
@@ -134,19 +127,16 @@ public class UIEventHandler {
 
         searchButton.setOnAction( e -> {
             String searchText = searchTextField.getText();
-            String searchedMeaningOfWord = "";
-            if (searchText == null && searchText.isEmpty()) {
+            if (searchText.isEmpty()) {
                 Platform.runLater(() -> meaningLabel.setText("Input word"));
-            }
-            else {
+            } else {
                 try {
-                    searchedMeaningOfWord = searchMeaningOfWord(searchText);
+                    final String SearchedMeaningOfWord = searchMeaningOfWord(searchText);
+                    Platform.runLater(() -> meaningLabel.setText(SearchedMeaningOfWord));
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
             }
-            final String finalSearchedMeaningOfWord = searchedMeaningOfWord;
-            Platform.runLater(() -> meaningLabel.setText(finalSearchedMeaningOfWord));
         });
 
         dialog.initStyle(StageStyle.UTILITY);

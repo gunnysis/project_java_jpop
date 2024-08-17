@@ -207,7 +207,6 @@ public class UIEventHandler {
             if (validateJson(modifedContent)) {
                 try(FileOutputStream fileOutputStream = new FileOutputStream(modifyFile)) {
                     fileOutputStream.write(modifedContent.getBytes());
-                    textArea.setEditable(false);
                 } catch (IOException e) {
                     e.printStackTrace();
                     return false;

@@ -1,5 +1,8 @@
 package lyricsystem;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -92,8 +95,9 @@ public class UIEventHandler {
             String type = serviceTypeBox.getValue();
             String modifyContent = textArea.getText();
 
-            modifyContentOfWordFile(title, type, modifyContent);
-            describeLabel.setText("Modified to Word Json File");
+            String message = modifyContentOfWordFile(title, modifyContent) ?
+                    "Modified to Word Json File" : "Please use letters, numbers, spaces, \nand most special characters (except for double quotes and backslashes)";
+            describeLabel.setText(message);
             describeLabel.setStyle("-fx-text-fill: gray; -fx-font-size: 14px;");
         });
         buttonActions.put("Search Meaning", this::showSearchWindow);
@@ -195,19 +199,39 @@ public class UIEventHandler {
         }
     }
 
-    public void modifyContentOfWordFile(String titleOfSong, String serviceType, String modifedContent) throws IOException {
+    public boolean modifyContentOfWordFile(String titleOfSong, String modifedContent) {
         String fileName = titleOfSong + "-words" + ".json";
         File modifyFile = new File("src/main/resources/words/"+ fileName);
 
-        try(FileOutputStream fileOutputStream = new FileOutputStream(modifyFile)) {
-            fileOutputStream.write(modifedContent.getBytes());
-            textArea.setEditable(false);
-        } catch (IOException e) {
-            describeLabel.setText("Can't Modified to Lyric Json File");
-            e.printStackTrace();
+        try {
+            if (validateJson(modifedContent)) {
+                try(FileOutputStream fileOutputStream = new FileOutputStream(modifyFile)) {
+                    fileOutputStream.write(modifedContent.getBytes());
+                    textArea.setEditable(false);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return false;
+                }
+            } else {
+                serviceLyrics.showTextArea(title, type);
+                return false;
+            }
+        } catch (IOException ex) {
+            return false;
         }
 
-         serviceLyrics.showTextArea(titleOfSong, serviceType);
+        return true;
+    }
+
+    private boolean validateJson(String jsonContent) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            // JSON 유효성 검사: 파싱이 실패하면 예외가 발생
+            objectMapper.readTree(jsonContent);
+        } catch (JsonParseException | JsonMappingException e) {
+            return false;
+        }
+        return true;
     }
 
 }

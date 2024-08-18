@@ -121,6 +121,7 @@ public class UIEventHandler {
         HBox panel = new HBox(10, new Label("Word"), searchTextField, searchButton);
         panel.setAlignment(Pos.CENTER);
         Label meaningLabel = new Label();
+        meaningLabel.setWrapText(true);
         VBox root = new VBox(15, panel, meaningLabel);
         root.setPadding(new Insets(20));
         Stage dialog = new Stage();

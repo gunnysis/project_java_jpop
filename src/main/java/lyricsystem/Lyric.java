@@ -1,9 +1,10 @@
 package lyricsystem;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 
-@Data
+@Getter @Setter
 public class Lyric {
     private String title;
     private String artist;

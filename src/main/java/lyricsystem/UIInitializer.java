@@ -61,6 +61,7 @@ public class UIInitializer extends Application  {
         textArea.setWrapText(true);
         textArea.setStyle("-fx-font-size: 20px;");
         modifyContentButton.setDisable(true);
+        describeLabel.setWrapText(true);
     }
 
     private void configureMainLayout() {

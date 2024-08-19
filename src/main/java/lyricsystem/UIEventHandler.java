@@ -89,7 +89,7 @@ public class UIEventHandler {
 
             String message = modifyContentOfWordFile(title, modifyContent) ?
                     "Modified to Word Json File" :
-                    "Please use letters, numbers, spaces, \nand most special characters (except for double quotes and backslashes)";
+                    "Please use letters, numbers, spaces, and most special characters except for double quotes, backslashes, Tab, New Line, Carriage Return, Backspace, Form Feed, null character, Unicode control characters.";
             describeLabel.setText(message);
             describeLabel.setStyle("-fx-text-fill: gray; -fx-font-size: 14px;");
         });

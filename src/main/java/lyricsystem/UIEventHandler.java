@@ -1,6 +1,7 @@
 package lyricsystem;
 
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
@@ -84,7 +85,6 @@ public class UIEventHandler {
         });
         buttonActions.put("Modify Content", () -> {
             title = inputBox.getText();
-            String type = serviceTypeBox.getValue();
             String modifyContent = textArea.getText();
 
             String message = modifyContentOfWordFile(title, modifyContent) ?
@@ -94,9 +94,7 @@ public class UIEventHandler {
             describeLabel.setStyle("-fx-text-fill: gray; -fx-font-size: 14px;");
         });
         buttonActions.put("Search Meaning", this::showSearchWindow);
-        buttonActions.put("Titles", () -> {
-            textArea.setText(showLyricFiles());
-        });
+        buttonActions.put("Titles", () -> textArea.setText(showLyricFiles()));
     }
 
     private String showLyricFiles() {
@@ -149,8 +147,8 @@ public class UIEventHandler {
     }
 
     public String searchMeaningOfWord(String searchText) throws IOException {
-        Map targetWordFile = (Map) readFromFile("src/main/resources/words/" + title + "-words" + ".json", Map.class);
-        String meaning = (String) targetWordFile.get(searchText);
+        Map<String, String> targetWordFile = readFromFile("src/main/resources/words/" + title + "-words" + ".json", new TypeReference<>() {});
+        String meaning = targetWordFile.get(searchText);
 
         return meaning == null ? "Word not found" : meaning;
     }

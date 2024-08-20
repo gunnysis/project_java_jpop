@@ -4,8 +4,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.*;
-import java.lang.reflect.Type;
-import java.util.Map;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -110,7 +108,7 @@ public class ServiceLyrics {
                 jsonContent.append(line).append("\n");
             }
 
-            JsonObject jsonObject = null;
+            JsonObject jsonObject;
             boolean isJsonFixed = false;
 
             try {
@@ -184,8 +182,7 @@ public class ServiceLyrics {
     }
 
     private static int getEndIndex(String jsonString, int startIndex) {
-        int endIndex = 0;
-        endIndex = jsonString.indexOf("\",", startIndex); // Ex. "artist": "SEKAI NO OWARI",
+        int endIndex = jsonString.indexOf("\",", startIndex); // Ex. "artist": "SEKAI NO OWARI",
 
         // The reason the endIndex == -1 condition is repeated is to handle the next possible scenario
         // when endIndex wasn't found in the previous step (i.e., when it's -1).

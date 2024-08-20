@@ -1,8 +1,11 @@
 package lyricsystem;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.*;
+import java.lang.reflect.Type;
+import java.util.Map;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -36,6 +39,29 @@ public class ServiceLyrics {
             throw new IllegalArgumentException("Unsupported source type: " + source.getClass().getName());
         }
     }
+
+    /**
+     * Read from file t.
+     *
+     * @param <T>           the type parameter
+     * @param source        the source
+     * @param typeReference the type reference
+     * @return the t
+     * @throws IOException the io exception
+     */
+    public static <T> T readFromFile(Object source, TypeReference<T> typeReference) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        if (source instanceof InputStream) {
+            return objectMapper.readValue((InputStream) source, typeReference);
+        } else if (source instanceof String) {
+            return objectMapper.readValue(new File((String) source), typeReference);
+        } else {
+            throw new IllegalArgumentException("Unsupported source type: " + source.getClass().getName());
+        }
+    }
+
+
 
     private String handleLyricType(String serviceType) {
         return switch (serviceType) {

@@ -1,5 +1,6 @@
 package lyricsystem;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.auth.oauth2.ServiceAccountCredentials;
 import com.google.cloud.translate.Translate;
 import com.google.cloud.translate.TranslateOptions;
@@ -24,8 +25,7 @@ import static lyricsystem.ServiceLyrics.readFromFile;
 @Data
 public class Word {
     public String titleOfLyric;
-    Map words;
-    private Map cachedWords;
+    private Map<String, String> cachedWords;
     private Map<String, String> translationCache = new HashMap<>();
     Translate translate;
     List<String> termsToTranslate;
@@ -34,24 +34,10 @@ public class Word {
     // Initialize the Kuromoji tokenizer
     Tokenizer kuromojiTokenizer = new Tokenizer();
 
-
     Word(String title) {
         this.titleOfLyric = title;
     }
 
-
-
-    public String getContent() {
-        if (cachedWords == null) {
-            loadWords();
-        }
-        StringBuilder result = new StringBuilder();
-
-        cachedWords.forEach((word, meaning) -> result.append(word).append(": ").append(meaning).append("\n"));
-
-
-        return result.toString();
-    }
 
     public String getContentForRevision() {
         StringBuilder result = new StringBuilder();
@@ -72,11 +58,11 @@ public class Word {
 
     private void loadWords() {
         try {
-            cachedWords = (Map) readFromFile("src/main/resources/words/" + this.titleOfLyric + "-words" + ".json", Map.class);
+            cachedWords = readFromFile("src/main/resources/words/" + this.titleOfLyric + "-words" + ".json", new TypeReference<>() {});
         } catch (IOException e) {
             try {
                 extractWords(this.titleOfLyric);
-                cachedWords = (Map) readFromFile("src/main/resources/words/" + this.titleOfLyric + "-words" + ".json", Map.class);
+                cachedWords = readFromFile("src/main/resources/words/" + this.titleOfLyric + "-words" + ".json",  new TypeReference<>() {});
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }

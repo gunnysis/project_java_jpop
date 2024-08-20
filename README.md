@@ -1,6 +1,6 @@
 # Title: JPOP lyrics search program
 
-## execute commend
+## execute shell script
 ```
 {
 cd ~/Documents/project_java

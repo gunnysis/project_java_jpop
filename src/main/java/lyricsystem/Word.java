@@ -86,10 +86,10 @@ public class Word {
     private String katakanaToHiragana(String katakana) {
         StringBuilder hiragana = new StringBuilder();
         for (char c : katakana.toCharArray()) {
-            // Katakana Unicode range is U+30A0 to U+30FF
-            // Hiragana Unicode range is U+3040 to U+309F
-            if (c >= '\u30A0' && c <= '\u30FF') {
-                hiragana.append((char) (c - 0x60));
+            // Katakana Unicode range is '゠'(U+30A0) to 'ヿ'(U+30FF)
+            // Hiragana Unicode range is U+3040(unassigned code point) to U+309F('ゟ')
+            if (c >= '゠' && c <= 'ヿ') {
+                hiragana.append((char) (c - 0x60)); // Subtract 96 to change it to the matching Hiragana character if c is in the Katakana range.
             } else {
                 hiragana.append(c);
             }

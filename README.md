@@ -1,7 +1,12 @@
 # Title: JPOP lyrics search program
 
 ## execute commend
-`java -jar ${APSOLUTE_PROJECT_ROOT_PATH}/build/libs/project_java-1.0-SNAPSHOT.jar &`
+```
+{
+cd ~/Documents/project_java
+java -jar build/libs/project_java-1.0-SNAPSHOT.jar &
+}
+```
 
 
 

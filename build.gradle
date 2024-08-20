@@ -7,7 +7,6 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
-group = 'lyrics'
 version = '1.0-SNAPSHOT'
 
 repositories {
@@ -52,15 +51,18 @@ test {
 jar {
     manifest {
         attributes(
-                'Main-Class': application.mainClass // JAR 파일의 메인 클래스를 지정
+                'Main-Class': application.mainClass // Define of main class of Jar file
         )
     }
 
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
+// shadowJar load to single unnamed module.
+// So this project doesn't need src/module-info.java.
+// Therefore, it will be printed "WARNING: Unsupported JavaFX configuration: classes were loaded from 'unnamed module ######'" after execution.
 shadowJar {
-    archiveClassifier.set('')
+    archiveClassifier.set('') // Create only Jar file except zip file
     manifest {
         attributes 'Main-Class': application.mainClass
     }
@@ -68,4 +70,13 @@ shadowJar {
 
 application {
     mainClass = 'lyricsystem.Main'
+}
+
+tasks.named('run') {
+    doFirst {
+        jvmArgs = [
+                "--module-path", "${System.getenv("JAVA_FX_HOME")}lib",
+                "--add-modules", "javafx.controls,javafx.fxml",
+        ]
+    }
 }

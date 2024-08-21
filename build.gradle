@@ -75,7 +75,7 @@ application {
 tasks.named('run') {
     doFirst {
         jvmArgs = [
-                "--module-path", "${System.getenv("JAVA_FX_HOME")}lib",
+                "--module-path", "${System.getenv("JAVA_FX_HOME")}/lib",
                 "--add-modules", "javafx.controls,javafx.fxml",
         ]
     }

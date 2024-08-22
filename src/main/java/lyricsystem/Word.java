@@ -127,7 +127,7 @@ public class Word {
                 }
                 // term 변수 값을 히라가나 값으로 변환 후 String hiraganaOfTerm 변수의 변수값으로 할당
                 String allHiraganaWord = convertToHiragana(kuromojiTokenizer, term);
-                String translated = translate.translate(term, Translate.TranslateOption.targetLanguage("ko")).getTranslatedText();
+                String translated = translate.translate(term, Translate.TranslateOption.targetLanguage("en")).getTranslatedText();
                 String infoOfterm = "[" + allHiraganaWord + "]" + " : " + translated;
                 translationCache.put(term, infoOfterm);
             });

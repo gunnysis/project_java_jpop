@@ -214,7 +214,6 @@ public class UIEventHandler {
     private boolean validateJson(String jsonContent) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            // JSON 유효성 검사: 파싱이 실패하면 예외가 발생
             objectMapper.readTree(jsonContent);
         } catch (JsonParseException | JsonMappingException e) {
             return false;

@@ -61,9 +61,12 @@ jar {
 // shadowJar load to single unnamed module.
 // So this project doesn't need src/module-info.java.
 // Therefore, it will be printed "WARNING: Unsupported JavaFX configuration: classes were loaded from 'unnamed module ######'" after execution.
+// shadowJar only create jar file not zip file.
 shadowJar {
-    archiveClassifier.set('') // Create only Jar file except zip file
+    archiveClassifier.set('') // Remove postfix '-all'
+    // manifest Add infos into 'MANIFEST.MF' file
     manifest {
+        // Designate main class When execute jar file.
         attributes 'Main-Class': application.mainClass
     }
 }
@@ -72,6 +75,7 @@ application {
     mainClass = 'lyricsystem.Main'
 }
 
+// this code's logic is When execute command of 'gradlew run'
 tasks.named('run') {
     doFirst {
         jvmArgs = [

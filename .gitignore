@@ -7,8 +7,10 @@ src/main/resources/words/*
 # api key files
 src/main/resources/key
 
-# backup folder
+# backup folder and file
 src/main/resources/backup/*
+project_java_UML_img_bak.png
+project_java_bak.uml
 
 META-INF
 
